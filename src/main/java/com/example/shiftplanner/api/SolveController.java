@@ -1,3 +1,4 @@
+
 package com.example.shiftplanner.api;
 
 import com.example.shiftplanner.domain.*;
@@ -5,10 +6,11 @@ import com.example.shiftplanner.domain.*;
 import static com.example.shiftplanner.api.Dtos.*;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,18 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class SolveController {
 
-    private final SolverManager<Schedule, Long> solverManager;
+    private final SolverConfig solverConfig;
     private final AtomicLong idGen = new AtomicLong(1L);
 
     @Value("${feature.availability.enabled:false}")
     private boolean availabilityEnabled;
 
-    public SolveController(SolverManager<Schedule, Long> solverManager) {
-        this.solverManager = solverManager;
+    public SolveController(SolverConfig solverConfig) {
+        this.solverConfig = solverConfig;
     }
 
     @PostMapping("/solve")
-    public SolveResponse solve(@RequestBody ScheduleRequest req) throws ExecutionException, InterruptedException {
+    public SolveResponse solve(@RequestBody ScheduleRequest req) {
         List<Employee> employees = new ArrayList<>();
         if (req.employees() != null) {
             for (EmployeeDTO e : req.employees()) {
@@ -60,8 +62,10 @@ public class SolveController {
 
         Schedule problem = new Schedule(employees, tasks, avails, slots);
 
-        long problemId = System.currentTimeMillis();
-        Schedule best = solverManager.solve(problemId, problem).getFinalBestSolution();
+        // Build a Solver and solve synchronously (simple and robust)
+        SolverFactory<Schedule> factory = SolverFactory.create(solverConfig);
+        Solver<Schedule> solver = factory.buildSolver();
+        Schedule best = solver.solve(problem);
 
         List<AssignmentDTO> out = new ArrayList<>();
         long unassigned = 0L;
