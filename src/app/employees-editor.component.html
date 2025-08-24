@@ -1,0 +1,24 @@
+<div class="flex">
+  <mat-form-field appearance="outline">
+    <mat-label>שם העובד</mat-label>
+    <input matInput [(ngModel)]="newName" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>כישור חדש</mat-label>
+    <input matInput [(ngModel)]="newSkill" (keyup.enter)="addSkill()" />
+  </mat-form-field>
+  <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
+
+  <button mat-raised-button color="primary" (click)="addEmployee()">הוסף עובד</button>
+</div>
+
+<div class="card" *ngFor="let e of employees">
+  <div class="flex" style="align-items:center; justify-content:space-between">
+    <div>
+      <strong>{{ e.name }}</strong>
+      <div>כישורים: <span class="mono">{{ e.skills.join(', ') || '—' }}</span></div>
+    </div>
+    <button mat-button color="warn" (click)="remove(e)">מחק</button>
+  </div>
+</div>

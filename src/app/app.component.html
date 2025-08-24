@@ -1,0 +1,22 @@
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  <div class="card">
+    <h2>עובדים</h2>
+    <app-employees-editor [employees]="employees" (employeesChange)="onEmployeesChange($event)"></app-employees-editor>
+  </div>
+
+  <div class="card">
+    <h2>משימות / משמרות</h2>
+    <app-tasks-editor [tasks]="tasks" (tasksChange)="onTasksChange($event)"></app-tasks-editor>
+  </div>
+
+  <div class="flex">
+    <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">הרץ תכנון</button>
+    <span *ngIf="solving">מחשב פתרון...</span>
+  </div>
+
+  <div class="card" *ngIf="result">
+    <app-results-view [result]="result"></app-results-view>
+  </div>
+</div>
