@@ -1,13 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { ApiService } from './services/api.service';
-import { Employee, Task, ScheduleRequest, SolveResponse } from './models';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 import { EmployeesEditorComponent } from './employees-editor.component';
 import { TasksEditorComponent } from './tasks-editor.component';
+import { ResultsViewComponent } from './results-view.component';
+import { ApiService } from './services/api.service';
+import { Employee, Task, SolveResponse, ScheduleRequest } from './models';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  imports: [EmployeesEditorComponent, EmployeesEditorComponent, TasksEditorComponent],
+  standalone: true,
+  imports: [CommonModule, MatButtonModule, EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent],
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   title = 'תכנון משמרות';

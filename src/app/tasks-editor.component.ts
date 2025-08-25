@@ -1,9 +1,19 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import {provideNativeDateAdapter} from '@angular/material/core';
 import { Task } from './models';
 
 @Component({
   selector: 'app-tasks-editor',
-  templateUrl: './tasks-editor.component.html'
+  templateUrl: './tasks-editor.component.html',
+  standalone: true,
+  providers: [provideNativeDateAdapter()],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatTimepickerModule],
 })
 export class TasksEditorComponent {
   @Input() tasks: Task[] = [];
@@ -22,8 +32,11 @@ export class TasksEditorComponent {
   addTask() {
     if (!this.form.name || !this.form.start || !this.form.end) return;
     const id = this.tasks.length ? Math.max(...this.tasks.map(t => t.id)) + 1 : 1;
-    const t: Task = { ...this.form, id };
-    this.tasks = [...this.tasks, t];
+    
+    console.log(this.form);
+    
+    const taskToAdd: Task = { ...this.form, id };
+    this.tasks = [...this.tasks, taskToAdd];
     this.tasksChange.emit(this.tasks);
     this.form = { id: id + 1, name: '', start: '', end: '', requiredSkills: [], requiredEmployees: 1 };
   }

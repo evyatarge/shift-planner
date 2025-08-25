@@ -25,6 +25,5 @@ import { ResultsViewComponent } from './results-view.component';
     MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatTableModule, MatSelectModule, MatCardModule,
     EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent
   ],
-  bootstrap: [AppComponent]
 })
 export class AppModule {}
