@@ -1,39 +1,43 @@
 {
   "name": "shift-planner-frontend",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
-    "test": "ng test"
+    "test": "ng test",
+    "watch": "ng build --watch --configuration development"
   },
   "dependencies": {
-    "@angular/animations": "^17.3.0",
-    "@angular/common": "^17.3.0",
-    "@angular/compiler": "^17.3.0",
-    "@angular/core": "^17.3.0",
-    "@angular/forms": "^17.3.0",
-    "@angular/platform-browser": "^17.3.0",
-    "@angular/platform-browser-dynamic": "^17.3.0",
-    "@angular/router": "^17.3.0",
-    "@angular/material": "^17.3.0",
-    "@angular/cdk": "^17.3.0",
+    "@angular/animations": "^20.1.0",
+    "@angular/common": "^20.1.0",
+    "@angular/compiler": "^20.1.0",
+    "@angular/core": "^20.1.0",
+    "@angular/forms": "^20.1.0",
+    "@angular/platform-browser": "^20.1.0",
+    "@angular/platform-browser-dynamic": "^20.1.0",
+    "@angular/router": "^20.1.0",
+    "@angular/material": "^20.1.0",
+    "@angular/cdk": "^20.1.0",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^17.3.5",
-    "@angular/cli": "^17.3.5",
-    "@angular/compiler-cli": "^17.3.0",
-    "typescript": "~5.3.2",
+    "@angular-devkit/build-angular": "^20.1.0",
+    "@angular/cli": "^20.1.0",
+    "@angular/compiler-cli": "^20.1.0",
+    "typescript": "~5.8.0",
     "karma": "^6.4.3",
     "karma-chrome-launcher": "^3.2.0",
     "karma-coverage": "^2.2.0",
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
     "jasmine-core": "^5.1.1"
+  },
+  "engines": {
+    "node": ">=20.19.0 <21 || >=22.12.0 <23 || >=24.0.0"
   },
   "volta": {
     "node": "20.19.4"
