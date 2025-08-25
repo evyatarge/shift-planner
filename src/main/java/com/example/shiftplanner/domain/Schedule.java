@@ -8,6 +8,7 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 
 /** Planning solution containing facts and planning entities. */
 @PlanningSolution
@@ -28,7 +29,7 @@ public class Schedule {
     private List<Assignment> assignmentList;
 
     @PlanningScore
-    private HardSoftScore score;
+    private HardSoftLongScore score;
 
     public Schedule(){}
 
@@ -51,6 +52,6 @@ public class Schedule {
     public List<Assignment> getAssignmentList(){ return assignmentList; }
     public void setAssignmentList(List<Assignment> assignmentList){ this.assignmentList = assignmentList; }
 
-    public HardSoftScore getScore(){ return score; }
-    public void setScore(HardSoftScore score){ this.score = score; }
+    public HardSoftLongScore getScore(){ return score; }
+    public void setScore(HardSoftLongScore score){ this.score = score; }
 }

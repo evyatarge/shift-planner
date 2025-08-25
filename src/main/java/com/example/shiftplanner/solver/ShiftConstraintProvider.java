@@ -2,16 +2,14 @@ package com.example.shiftplanner.solver;
 
 import com.example.shiftplanner.domain.*;
 
-import java.time.Duration;
-
 import org.optaplanner.core.api.score.stream.*;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 
 public class ShiftConstraintProvider implements ConstraintProvider {
 
     // Fixed weights:
-    private static final HardSoftScore HARD = HardSoftScore.ONE_HARD;
-    private static final HardSoftScore SOFT = HardSoftScore.ONE_SOFT;
+    private static final HardSoftLongScore HARD = HardSoftLongScore.ONE_HARD;
+    private static final HardSoftLongScore SOFT = HardSoftLongScore.ONE_SOFT;
 
     @Override
     public Constraint[] defineConstraints(ConstraintFactory factory) {

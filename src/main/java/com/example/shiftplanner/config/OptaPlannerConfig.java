@@ -2,7 +2,6 @@
 package com.example.shiftplanner.config;
 
 import java.time.Duration;
-import java.util.List;
 
 import com.example.shiftplanner.domain.Assignment;
 import com.example.shiftplanner.domain.Schedule;
