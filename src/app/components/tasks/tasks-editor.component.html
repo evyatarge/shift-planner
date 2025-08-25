@@ -19,7 +19,7 @@
   </mat-form-field>
 
   <mat-form-field appearance="outline">
-    <mat-label>עובדים דרושים</mat-label>
+    <mat-label>לוחמים דרושים</mat-label>
     <input type="number" matInput [(ngModel)]="form.requiredEmployees" min="1">
   </mat-form-field>
 </div>
@@ -32,9 +32,9 @@
   <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
 </div>
 
-<div>כישורים נדרשים: <span class="mono">{{ form.requiredSkills.join(', ') || '—' }}</span></div>
+<div> כישורים נדרשים למשימה: <span class="mono">{{ form.requiredSkills.join(', ') || '—' }}</span></div>
 
-<div class="flex" style="margin-top:8px">
+<div class="flex" style="margin:8px 0">
   <button mat-raised-button color="primary" (click)="addTask()">הוסף משימה</button>
 </div>
 
@@ -42,9 +42,9 @@
   <div class="flex" style="align-items:center; justify-content:space-between">
     <div>
       <strong>{{ t.name }}</strong>
-      <div class="mono">{{ t.start }} → {{ t.end }}</div>
+      <div class="mono" style="direction: ltr;">{{ getDateTime(t.start) }} → {{ getDateTime(t.end) }}</div>
       <div>כישורים: <span class="mono">{{ t.requiredSkills.join(', ') || '—' }}</span></div>
-      <div>עובדים דרושים: {{ t.requiredEmployees }}</div>
+      <div>לוחמים דרושים: {{ t.requiredEmployees }}</div>
     </div>
     <button mat-button color="warn" (click)="remove(t)">מחק</button>
   </div>

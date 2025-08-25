@@ -1,20 +1,24 @@
 <div class="flex">
   <mat-form-field appearance="outline">
-    <mat-label>שם העובד</mat-label>
+    <mat-label>שם הלוחם</mat-label>
     <input matInput [(ngModel)]="newName" />
   </mat-form-field>
 
+  <button mat-raised-button color="primary" (click)="addEmployee()">הוסף לוחם</button>
+</div>
+
+<div class="flex">
   <mat-form-field appearance="outline">
     <mat-label>כישור חדש</mat-label>
     <input matInput [(ngModel)]="newSkill" (keyup.enter)="addSkill()" />
   </mat-form-field>
   <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
-
-  <button mat-raised-button color="primary" (click)="addEmployee()">הוסף עובד</button>
 </div>
+
 <!-- temporary skills - for the next employee to add -->
 <span class="card flex">
-  כישורים של העובד הבא שתוסיף:
+
+  כישורים של הלוחם הבא שתוסיף:
   @for (skill of tempSkills; track $index) {
     <span class="mono">
       {{skill}}
@@ -24,7 +28,7 @@
     </span>
   }
   @if (tempSkills.length === 0) {
-    <span style="color: gray;">ריק</span>
+    <span style="color: gray;">חפ״ש</span>
   }
 </span>
 <!-- employees  -->
