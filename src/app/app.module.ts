@@ -19,10 +19,11 @@ import { TasksEditorComponent } from './tasks-editor.component';
 import { ResultsViewComponent } from './results-view.component';
 
 @NgModule({
-  declarations: [AppComponent, EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent],
+  declarations: [],
   imports: [
-    BrowserModule, BrowserAnimationsModule, FormsModule, ReactiveFormsModule, HttpClientModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatTableModule, MatSelectModule, MatCardModule
+    AppComponent, BrowserModule, BrowserAnimationsModule, FormsModule, ReactiveFormsModule, HttpClientModule,
+    MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatTableModule, MatSelectModule, MatCardModule,
+    EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent
   ],
   bootstrap: [AppComponent]
 })

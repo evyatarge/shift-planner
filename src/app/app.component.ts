@@ -1,10 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { ApiService } from './services/api.service';
 import { Employee, Task, ScheduleRequest, SolveResponse } from './models';
+import { EmployeesEditorComponent } from './employees-editor.component';
+import { TasksEditorComponent } from './tasks-editor.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  imports: [EmployeesEditorComponent, EmployeesEditorComponent, TasksEditorComponent],
 })
 export class AppComponent {
   title = 'תכנון משמרות';
