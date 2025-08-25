@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ApiService } from './services/api.service';
 import { Employee, Task, ScheduleRequest, SolveResponse } from './models';
 
@@ -18,7 +18,7 @@ export class AppComponent {
   result: SolveResponse | null = null;
   solving = false;
 
-  constructor(private api: ApiService) {}
+  private api = inject(ApiService);
 
   onEmployeesChange(list: Employee[]) { this.employees = list; }
   onTasksChange(list: Task[]) { this.tasks = list; }
