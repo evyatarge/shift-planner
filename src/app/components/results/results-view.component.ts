@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { SolveResponse } from './models';
+import { SolveResponse } from '../../models';
 
 @Component({
   selector: 'app-results-view',

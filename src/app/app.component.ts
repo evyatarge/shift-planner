@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { EmployeesEditorComponent } from './employees-editor.component';
-import { TasksEditorComponent } from './tasks-editor.component';
-import { ResultsViewComponent } from './results-view.component';
+import { EmployeesEditorComponent } from './components/employees/employees-editor.component';
+import { TasksEditorComponent } from './components/tasks/tasks-editor.component';
+import { ResultsViewComponent } from './components/results/results-view.component';
 import { ApiService } from './services/api.service';
 import { Employee, Task, SolveResponse, ScheduleRequest } from './models';
 
@@ -14,13 +14,13 @@ import { Employee, Task, SolveResponse, ScheduleRequest } from './models';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'תכנון משמרות';
+  title = 'שבצק-אותי משמרות';
   employees: Employee[] = [
-    { id: 1, name: 'אליס', skills: ['cashier', 'stock'] },
-    { id: 2, name: 'בוב', skills: ['cashier'] }
+    { id: 1, name: 'אליס', skills: ['מפקד'] },
+    { id: 2, name: 'בוב', skills: ['נהג', 'בנאי'] }
   ];
   tasks: Task[] = [
-    { id: 10, name: 'משמרת בוקר', start: '2025-08-24T08:00', end: '2025-08-24T12:00', requiredSkills: ['cashier'], requiredEmployees: 1 }
+    { id: 10, name: 'סיור בוקר', start: '2025-08-24T08:00', end: '2025-08-24T12:00', requiredSkills: ['נהג'], requiredEmployees: 1 }
   ];
   result: SolveResponse | null = null;
   solving = false;

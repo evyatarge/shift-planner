@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
-import { Employee } from './models';
+import { Employee } from '../../models';
 
 @Component({
   selector: 'app-employees-editor',

@@ -6,7 +6,7 @@ import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import {provideNativeDateAdapter} from '@angular/material/core';
-import { Task } from './models';
+import { Task } from '../../models';
 
 @Component({
   selector: 'app-tasks-editor',

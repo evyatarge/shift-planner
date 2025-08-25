@@ -14,9 +14,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 
 import { AppComponent } from './app.component';
-import { EmployeesEditorComponent } from './employees-editor.component';
-import { TasksEditorComponent } from './tasks-editor.component';
-import { ResultsViewComponent } from './results-view.component';
+import { EmployeesEditorComponent } from './components/employees/employees-editor.component';
+import { TasksEditorComponent } from './components/tasks/tasks-editor.component';
+import { ResultsViewComponent } from './components/results/results-view.component';
 
 @NgModule({
   declarations: [],
