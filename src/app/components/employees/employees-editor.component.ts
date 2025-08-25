@@ -40,6 +40,31 @@ export class EmployeesEditorComponent {
     this.tempSkills = [];
   }
 
+  editAddSkill(emp: Employee) {
+    const employee = this.employees.find(e => e.id === emp.id);
+    const newSkill = prompt('כישור להוספה:');
+    employee.skills.push(newSkill);
+    this.employeesChange.emit(this.employees);
+  }
+  
+  editremoveSkill(emp: Employee, firstTime = true) {
+    const employee = this.employees.find(e => e.id === emp.id);
+    let title = 'כישור להסרה:';
+    if (!firstTime) {
+      const titlePrefix = 'אנא הזן כישור קיים - ';
+      title = titlePrefix + title;
+    }
+    const skillToRemove = prompt(title);
+
+    const found = employee.skills.some(skill => skill === skillToRemove);
+    if (found || !skillToRemove) {
+      employee.skills = employee.skills.filter(skill => skill !== skillToRemove);
+      this.employeesChange.emit(this.employees);
+    } else {
+      this.editremoveSkill(emp, false);
+    }
+  }
+
   remove(emp: Employee) {
     this.employees = this.employees.filter(e => e !== emp);
     this.employeesChange.emit(this.employees);

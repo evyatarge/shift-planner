@@ -16,7 +16,7 @@
 </div>
 
 <!-- temporary skills - for the next employee to add -->
-<span class="card flex">
+  <span class="card flex">
 
   כישורים של הלוחם הבא שתוסיף:
   @for (skill of tempSkills; track $index) {
@@ -31,6 +31,7 @@
     <span style="color: gray;">חפ״ש</span>
   }
 </span>
+
 <!-- employees  -->
 @for (e of employees; track $index) {
 <div class="card">
@@ -39,7 +40,11 @@
       <strong>{{ e.name }}</strong>
       <div>כישורים: <span class="mono">{{ e.skills.join(', ') || '—' }}</span></div>
     </div>
-    <button mat-button color="warn" (click)="remove(e)">מחק</button>
+    <div>
+      <button mat-button style="color: blue" (click)="editAddSkill(e)">הוסף</button>
+      <button mat-button style="color: purple" (click)="editremoveSkill(e)">הסר</button>
+      <button mat-button color="warn" (click)="remove(e)">מחק</button>
+    </div>
   </div>
 </div>
 }
