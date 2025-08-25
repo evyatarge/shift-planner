@@ -12,8 +12,24 @@
 
   <button mat-raised-button color="primary" (click)="addEmployee()">הוסף עובד</button>
 </div>
-
-<div class="card" *ngFor="let e of employees">
+<!-- temporary skills - for the next employee to add -->
+<span class="card flex">
+  כישורים של העובד הבא שתוסיף:
+  @for (skill of tempSkills; track $index) {
+    <span class="mono">
+      {{skill}}
+      @if ($index !== tempSkills.length-1) {
+        <span>,</span>
+      }
+    </span>
+  }
+  @if (tempSkills.length === 0) {
+    <span style="color: gray;">ריק</span>
+  }
+</span>
+<!-- employees  -->
+@for (e of employees; track $index) {
+<div class="card">
   <div class="flex" style="align-items:center; justify-content:space-between">
     <div>
       <strong>{{ e.name }}</strong>
@@ -22,3 +38,4 @@
     <button mat-button color="warn" (click)="remove(e)">מחק</button>
   </div>
 </div>
+}
