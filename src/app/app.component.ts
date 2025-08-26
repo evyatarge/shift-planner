@@ -100,8 +100,8 @@ export class AppComponent implements OnInit {
     this.solving = true;
     this.result = null;
     this.explanation = null;
-    this.api.solveWithExplain(req).subscribe({
-      next: res => { this.result = res.result; this.explanation = res.explanation; this.solving = false; },
+    this.api.solve(req).subscribe({
+      next: res => { this.result = res; this.solving = false; },
       error: err => { console.error(err); this.solving = false; }
     });
   }

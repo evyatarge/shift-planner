@@ -7,14 +7,12 @@
   <mat-form-field appearance="outline">
     <mat-label>התחלה</mat-label>
     <input matInput [matTimepicker]="startPicker" [(ngModel)]="form.start" placeholder="2025-08-24T08:00">
-    <mat-timepicker-toggle matIconSuffix [for]="startPicker"></mat-timepicker-toggle>
     <mat-timepicker #startPicker></mat-timepicker>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>סיום</mat-label>
     <input matInput [matTimepicker]="endPicker" [(ngModel)]="form.end" placeholder="2025-08-24T16:00">
-    <mat-timepicker-toggle matIconSuffix [for]="endPicker"></mat-timepicker-toggle>
     <mat-timepicker #endPicker></mat-timepicker>
   </mat-form-field>
 
