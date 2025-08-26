@@ -7,95 +7,80 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Employee } from '../../models';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-employees-editor',
-  templateUrl: './employees-editor.component.html',
-  styleUrls: ['employees-editor.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSlideToggleModule, MatIconModule, MatChipsModule, MatCardModule],
+  templateUrl: './employees-editor.component.html',
+  styleUrls: ['./employees-editor.component.scss'],
+  imports: [
+    CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule,
+    MatIconModule, MatChipsModule, MatCardModule, MatSlideToggleModule
+  ]
 })
 export class EmployeesEditorComponent {
   @Input() employees: Employee[] = [];
   @Output() employeesChange = new EventEmitter<Employee[]>();
 
-  
-  newNamesList = '';
-
-
   newName = '';
+  newNamesList = '';
   newSkill = '';
   tempSkills: string[] = [];
 
   addSkill() {
-    if (this.newSkill.trim()) {
-      this.tempSkills.push(this.newSkill.trim());
-      this.newSkill = '';
-    }
+    const s = this.newSkill.trim();
+    if (!s) return;
+    this.tempSkills = [...this.tempSkills, s];
+    this.newSkill = '';
   }
-
-  
-  
-  addEmployeesList() {
-    if (!this.newNamesList.trim()) return;
-
-    const parsedEmpList = this.newNamesList.split(',');
-    parsedEmpList.forEach(emp => {
-      this.newName = emp;
-      this.addEmployee();
-    });
-    
-    this.newNamesList = '';
-    this.tempSkills = [];
-  }
-
-
 
   addEmployee() {
-    if (!this.newName.trim()) return;
-    const id = this.employees.length ? Math.max(...this.employees.map(e => e.id)) + 1 : 1;
-    const emp: Employee = { id, name: this.newName.trim(), skills: [...this.tempSkills] };
+    const name = this.newName.trim();
+    if (!name) return;
+    const nextId = this.employees.length ? Math.max(...this.employees.map(e => e.id)) + 1 : 1;
+    const emp: Employee = { id: nextId, name, skills: [...this.tempSkills], active: true };
     this.employees = [...this.employees, emp];
-    this.employeesChange.emit(this.employees);
-    this.newName = '';
     this.tempSkills = [];
+    this.newName = '';
+    this.emit();
   }
 
-  editAddSkill(emp: Employee) {
-    const employee = this.employees.find(e => e.id === emp.id);
-    const newSkill = prompt('כישור להוספה:');
-    employee.skills.push(newSkill);
-    this.employeesChange.emit(this.employees);
-  }
-  
-  editremoveSkill(emp: Employee, firstTime = true) {
-    const employee = this.employees.find(e => e.id === emp.id);
-    let title = 'כישור להסרה:';
-    if (!firstTime) {
-      const titlePrefix = 'אנא הזן כישור קיים - ';
-      title = titlePrefix + title;
+  addEmployeesList() {
+    const raw = this.newNamesList || '';
+    const items = raw.split(/[\n,;|]/).map(s => s.trim()).filter(Boolean);
+    if (!items.length) return;
+    let maxId = this.employees.length ? Math.max(...this.employees.map(e => e.id)) : 0;
+    const added: Employee[] = [];
+    for (const name of items) {
+      maxId += 1;
+      added.push({ id: maxId, name, skills: [], active: true });
     }
-    const skillToRemove = prompt(title);
+    this.employees = [...this.employees, ...added];
+    this.newNamesList = '';
+    this.emit();
+  }
 
-    const found = employee.skills.some(skill => skill === skillToRemove);
-    if (found || !skillToRemove) {
-      employee.skills = employee.skills.filter(skill => skill !== skillToRemove);
-      this.employeesChange.emit(this.employees);
-    } else {
-      this.editremoveSkill(emp, false);
+  removeEmployee(e: Employee) {
+    this.employees = this.employees.filter(x => x !== e);
+    this.emit();
+  }
+
+  editAddSkill(e: Employee) {
+    const s = prompt(`הוסף כישור עבור ${e.name}:`)?.trim();
+    if (!s) return;
+    if (!e.skills.includes(s)) {
+      e.skills = [...e.skills, s];
+      this.emit();
     }
   }
 
-  remove(emp: Employee) {
-    // TODO - add a confirmation to remove employee
-
-    // const confirmed = confirm('בטוח שברצונך למחוק את '+emp.name);
-    // if (confirmed) {
-      this.employees = this.employees.filter(e => e !== emp);
-      this.employeesChange.emit(this.employees);
-    // }
+  editRemoveSkill(e: Employee) {
+    const s = prompt(`הסר כישור עבור ${e.name}:\n(כתוב בדיוק כפי שמופיע)` )?.trim();
+    if (!s) return;
+    e.skills = e.skills.filter(x => x !== s);
+    this.emit();
   }
 
   onCsv(ev: Event) {
@@ -105,22 +90,31 @@ export class EmployeesEditorComponent {
     reader.onload = () => {
       const text = String(reader.result || '');
       const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-      // תומך גם בכותרת אופציונלית name,skills
-      const startIdx = lines[0]?.toLowerCase().startsWith('name') ? 1 : 0;
-      const nextId = () => (this.employees.length ? Math.max(...this.employees.map(e => e.id)) + 1 : 1);
-      for (let i=startIdx;i<lines.length;i++){
+      if (!lines.length) return;
+
+      // Header detection (hebrew/english)
+      const headerTokens = lines[0].split(/[,\t;]/).map(t => t.trim().toLowerCase());
+      const isHeader = headerTokens.some(t => ['name','שם'].includes(t)) ||
+                       headerTokens.some(t => ['skills','כישורים','מיומנויות'].includes(t));
+      const startIdx = isHeader ? 1 : 0;
+
+      let maxId = this.employees.length ? Math.max(...this.employees.map(e => e.id)) : 0;
+      for (let i = startIdx; i < lines.length; i++) {
         const raw = lines[i];
-        // פיצול בסיסי: עמודה ראשונה שם, השאר כישורים (מופרדים ב-, ; |)
-        const parts = raw.split(',').map(p => p.trim()).filter(Boolean);
-        if (!parts.length) continue;
-        const name = parts[0];
-        const rest = raw.slice(raw.indexOf(',')+1).trim();
-        const skills = (rest ? rest.split(/[;,|]/) : []).map(s => s.trim()).filter(Boolean);
-        const emp: Employee = { id: nextId(), name, skills, active: true };
-        this.employees.push(emp);
+        const firstComma = raw.indexOf(',');
+        let name = raw;
+        let skillsPart = '';
+        if (firstComma >= 0) {
+          name = raw.slice(0, firstComma).trim();
+          skillsPart = raw.slice(firstComma + 1).trim();
+        }
+        if (!name) continue;
+        const skills = (skillsPart ? skillsPart.split(/[;,|]/) : []).map(s => s.trim()).filter(Boolean);
+        maxId += 1;
+        this.employees.push({ id: maxId, name, skills, active: true });
       }
       this.employees = [...this.employees];
-      this.employeesChange.emit(this.employees);
+      this.emit();
       input.value = '';
     };
     reader.readAsText(file);
@@ -128,10 +122,11 @@ export class EmployeesEditorComponent {
 
   downloadCsvTemplate() {
     const content = "שם,כישורים\nהמפקד,מפקד;נהג\nהחייל,חמליסט\n";
-    const blob = new Blob([content], {type:'text/csv;charset=utf-8;'});
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'template.csv'; a.click();
+    const a = document.createElement('a'); a.href = url; a.download = 'employees_template.csv'; a.click();
     URL.revokeObjectURL(url);
   }
 
+  private emit(){ this.employeesChange.emit(this.employees); }
 }
