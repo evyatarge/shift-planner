@@ -3,7 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SolveResponse, Employee, Task, ExplainSolveResponse } from '../models';
 
-export interface ScheduleRequest { employees: Employee[]; tasks: Task[]; availabilities?: any[]; }
+export interface ScheduleRequest {
+  employees: Employee[];
+  tasks: Task[];
+  availabilities?: any[];
+  minRestHours?: number;
+  restMode?: 'HARD' | 'SOFT';
+}
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -25,8 +31,14 @@ export class ApiService {
   getEmployees(): Observable<Employee[]> {
     return this.http.get<Employee[]>(`${this.base}/employees`);
   }
-
   saveEmployees(employees: Employee[]): Observable<Employee[]> {
     return this.http.post<Employee[]>(`${this.base}/employees`, employees);
+  }
+
+  getTasks(): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.base}/tasks`);
+  }
+  saveTasks(tasks: Task[]): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.base}/tasks`, tasks);
   }
 }

@@ -1,24 +1,48 @@
 <div class="container">
-  <h1>{{ title }}</h1>
+  <h1>{{title}}</h1>
 
   <div class="card">
-    <h3>לוחמים</h3>
-    <app-employees-editor [(employees)]="employees" (employeesChange)="onEmployeesChange($event)"></app-employees-editor>
+    <h3>עובדים</h3>
+    <app-employees-editor [(employees)]="employees"></app-employees-editor>
     <div class="flex">
       <button mat-raised-button color="primary" (click)="saveEmployees()">שמור עובדים</button>
     </div>
   </div>
 
   <div class="card">
-    <h3>משימות</h3>
-    <app-tasks-editor [(tasks)]="tasks" (tasksChange)="onTasksChange($event)"></app-tasks-editor>
+    <h3>תבניות משמרות ליומיום</h3>
+    <app-shift-templates (tasksGenerated)="onTasksGenerated($event)"></app-shift-templates>
   </div>
 
-  <div class="flex">
-    <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">
-      {{ solving ? 'מחשב...' : 'שבץ באופן אופטימלי' }}
-    </button>
-  </div> 
+  <div class="card">
+    <h3>משימות</h3>
+    <app-tasks-editor [(tasks)]="tasks"></app-tasks-editor>
+    <div class="flex">
+      <button mat-stroked-button (click)="saveTasks()">שמור משימות</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>הגדרות מנוחה</h3>
+    <div class="flex">
+      <mat-form-field appearance="outline">
+        <mat-label>מינימום שעות מנוחה</mat-label>
+        <input matInput type="number" min="0" [(ngModel)]="minRestHours">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>מצב אילוץ</mat-label>
+        <mat-select [(ngModel)]="restMode">
+          <mat-option value="SOFT">Soft (העדפה)</mat-option>
+          <mat-option value="HARD">Hard (אסור להפר)</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">
+    {{ solving ? 'מחשב...' : 'שבץ באופן אופטימלי' }}
+  </button>
 
   <div class="card" *ngIf="result">
     <h3>תוצאה</h3>

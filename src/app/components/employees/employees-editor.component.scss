@@ -1,0 +1,5 @@
+.flex { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+.grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:12px; margin-top:12px; }
+.emp { padding:12px; }
+.emp-row { display:flex; justify-content:space-between; align-items:center; }
+.chips { margin-top:8px; }

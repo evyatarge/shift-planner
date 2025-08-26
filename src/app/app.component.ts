@@ -9,32 +9,33 @@ import { ResultsViewComponent } from './components/results/results-view.componen
 // import { ExplanationPanelComponent } from './components/explanation-panel/explanation-panel.component';
 
 import { ApiService, ScheduleRequest } from './services/api.service';
-import { Employee, Task, SolveResponse, Explanation } from './models';
+import { Employee, Task, SolveResponse, Explanation, RestMode } from './models';
+import { ShiftTemplatesComponent } from './components/shifts/shift-templates.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, MatButtonModule, MatSnackBarModule,
-    EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent, // ExplanationPanelComponent
+    CommonModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, ReactiveFormsModule,
+    EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent, ShiftTemplatesComponent // ExplanationPanelComponent
   ],
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
   title = 'שבצק-אותי משמרות';
 
-  employees: Employee[] = [
-    // { id: 1, name: 'אליס', skills: ['מפקד'] },
-    // { id: 2, name: 'בוב', skills: ['נהג', 'בנאי'] }
-  ];
-
-  tasks: Task[] = [
-    // { id: 10, name: 'סיור בוקר', start: '2025-08-24T08:00', end: '2025-08-24T12:00', requiredSkills: ['נהג'], requiredEmployees: 1 }
-  ];
-
+  employees: Employee[] = [];
+  tasks: Task[] = [];
   result: SolveResponse | null = null;
   explanation: Explanation | null = null; // optional use of explanation for constraint details
   solving = false;
+  // settings for constraints
+  minRestHours = 0;
+  restMode: RestMode = 'SOFT';
 
   private api = inject(ApiService);
   private snack = inject(MatSnackBar);
@@ -42,8 +43,12 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // load saved employees (if any) from backend
     this.api.getEmployees().subscribe({
-      next: list => { if (list && list.length) this.employees = list; },
-      error: err => console.warn('Failed to load saved employees (using defaults).', err)
+      next: employeesList => { if (employeesList?.length) this.employees = employeesList.map(employee => ({...employee, active: true})); },
+      error: err => { console.error('Failed to load saved employees (using defaults).', err); }
+    });
+    this.api.getTasks().subscribe({
+      next: tasksList => { if (tasksList?.length) this.tasks = tasksList; },
+      error: err => { console.error('Failed to load saved tasks (using defaults).', err); }
     });
   }
 
@@ -51,30 +56,54 @@ export class AppComponent implements OnInit {
   onTasksChange(list: Task[]) { this.tasks = list; }
 
   saveEmployees(): void {
-    this.api.saveEmployees(this.employees).subscribe({
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      next: _ => this.snack.open('העובדים נשמרו בהצלחה', 'close', { duration: 1800 }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      error: err => this.snack.open('שמירה נכשלה', 'close', { duration: 2500 })
-    });
-  }
-
-  solve() {
-    const req: ScheduleRequest = { employees: this.employees, tasks: this.tasks };
-    this.solving = true;
-    this.result = null;
-    // this.explanation = null;
-
-    // this.api.solveWithExplain(req).subscribe({
-    this.api.solve(req).subscribe({
-      next: res => { 
-        this.result = res; //.result;
-        // this.explanation = res.explanation;
-        this.solving = false;
+    const payload = this.employees.map(({active, ...rest}) => rest as Employee);
+    this.api.saveEmployees(payload).subscribe({
+      next: savedEmps => {
+        this.snack.open('העובדים נשמרו בהצלחה', 'x', { duration: 1800 });
+        this.employees = savedEmps.map(employee => ({...employee, active: true}));
       },
       error: err => {
-        console.error(err); this.solving = false;
+        console.error('Failed to save employees.', err);
+        this.snack.open('שמירת עובדים נכשלה', 'x', { duration: 2500 });
       }
     });
   }
+
+  saveTasks(): void {
+    this.api.saveTasks(this.tasks).subscribe({
+      next: savedTasks => {
+        this.snack.open('המשימות נשמרו', 'x', { duration: 1800 });
+        this.tasks = savedTasks;
+      },
+      error: err => {
+        console.error('Failed to save tasks.', err);
+        this.snack.open('שמירת משימות נכשלה', 'x', { duration: 2500 });
+      }
+    });
+  }
+
+  onTasksGenerated(list: Task[]) {
+    // change/add tasks for generated day - here I chose to add
+    this.tasks = [...this.tasks, ...list];
+    this.snack.open(`נוצרו ${list.length} משימות ליממה`, 'x', { duration: 1800 });
+  }
+  
+  solve() {
+    const activeEmployees = this.employees.filter(e => e.active !== false);
+    const req: ScheduleRequest = {
+      employees: activeEmployees,
+      tasks: this.tasks,
+      minRestHours: this.minRestHours,
+      restMode: this.restMode
+    };
+    
+    this.solving = true;
+    this.result = null;
+    this.explanation = null;
+    this.api.solveWithExplain(req).subscribe({
+      next: res => { this.result = res.result; this.explanation = res.explanation; this.solving = false; },
+      error: err => { console.error(err); this.solving = false; }
+    });
+  }
+
 }

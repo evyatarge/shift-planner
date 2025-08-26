@@ -1,0 +1,21 @@
+<div class="container shift-templates">
+  <div class="flex">
+    <mat-form-field appearance="outline"><mat-label>שם משמרת</mat-label><input matInput [(ngModel)]="form.name"></mat-form-field>
+    <mat-form-field appearance="outline"><mat-label>התחלה (HH:mm)</mat-label><input matInput [(ngModel)]="form.start" placeholder="08:00"></mat-form-field>
+    <mat-form-field appearance="outline"><mat-label>סיום (HH:mm)</mat-label><input matInput [(ngModel)]="form.end" placeholder="16:00"></mat-form-field>
+    <mat-form-field appearance="outline"><mat-label>עובדים דרושים</mat-label><input type="number" min="1" matInput [(ngModel)]="form.requiredEmployees"></mat-form-field>
+    <button mat-raised-button color="primary" (click)="add()">הוסף תבנית</button>
+  </div>
+
+  <div class="list">
+    <mat-card *ngFor="let s of templates">
+      <div><strong>{{s.name}}</strong> — {{s.start}}–{{s.end}} · נדרשים: {{s.requiredEmployees}}</div>
+      <button mat-button color="warn" (click)="remove(s)">מחק</button>
+    </mat-card>
+  </div>
+
+  <div class="flex" style="margin-top:8px;">
+    <mat-form-field appearance="outline"><mat-label>תאריך (YYYY-MM-DD)</mat-label><input matInput [(ngModel)]="targetDate" placeholder="2025-08-26"></mat-form-field>
+    <button mat-stroked-button (click)="generate()">צור משימות ליממה</button>
+  </div>
+</div>
