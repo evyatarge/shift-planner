@@ -8,13 +8,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
 import { Employee } from '../../models';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-employees-editor',
   templateUrl: './employees-editor.component.html',
   styleUrls: ['employees-editor.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatChipsModule, MatCardModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSlideToggleModule, MatIconModule, MatChipsModule, MatCardModule],
 })
 export class EmployeesEditorComponent {
   @Input() employees: Employee[] = [];

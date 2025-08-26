@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // load saved employees (if any) from backend
     this.api.getEmployees().subscribe({
-      next: employeesList => { if (employeesList?.length) this.employees = employeesList.map(employee => ({...employee, active: true})); },
+      next: employeesList => { if (employeesList?.length) this.employees = employeesList.map(employee => ({...employee, active: employee.active ?? true})); },
       error: err => { console.error('Failed to load saved employees (using defaults).', err); }
     });
     this.api.getTasks().subscribe({

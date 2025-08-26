@@ -1,13 +1,13 @@
 <div class="flex">
   <mat-form-field appearance="outline">
     <mat-label>שם הלוחם</mat-label>
-    <input matInput [(ngModel)]="newName" />
+    <input matInput [(ngModel)]="newName" name="newName" />
   </mat-form-field>
   <button mat-raised-button color="primary" (click)="addEmployee()">הוסף לוחם</button>
 <!-- list of employees ??? -->
   <mat-form-field appearance="outline">
     <mat-label>הוסף רשימה</mat-label>
-    <input matInput [(ngModel)]="newNamesList" />
+    <input matInput [(ngModel)]="newNamesList" name="newNamesList" />
   </mat-form-field>
   <button mat-raised-button color="primary" (click)="addEmployeesList()">הוסף רשימת לוחמים</button>
 </div>
@@ -21,7 +21,7 @@
 <div class="flex">
   <mat-form-field appearance="outline">
     <mat-label>כישור חדש</mat-label>
-    <input matInput [(ngModel)]="newSkill" (keyup.enter)="addSkill()" />
+    <input matInput [(ngModel)]="newSkill" name="newSkill" (keyup.enter)="addSkill()" />
   </mat-form-field>
   <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
 </div>
@@ -44,18 +44,18 @@
 </span>
 
 <!-- employees  -->
-@for (e of employees; track $index) {
+@for (e of employees; track e.id) {
 <div class="card">
   <div class="flex" style="align-items:center; justify-content:space-between">
     <div>
-      <mat-slide-toggle [(ngModel)]="e.active" [ngModelOptions]="{standalone:true}"></mat-slide-toggle>
+      <mat-slide-toggle [(ngModel)]="e.active" [ngModelOptions]="{standalone:true}" name="active_{{e.id}}" color="primary">לשבץ עכשיו</mat-slide-toggle>
       <strong>{{ e.name }}</strong>
       <!-- TODO - remove if no use at last with chips <div>כישורים: <span class="mono">{{ e.skills.join(', ') || '—' }}</span></div> -->
     </div>
     <!-- skills chips -->
     <div class="chips">
       <mat-chip-set>
-        @for (skill of e.skills; track $index) {
+        @for (skill of e.skills; track skill) {
           <mat-chip>{{skill}}</mat-chip>
         }
       </mat-chip-set>
