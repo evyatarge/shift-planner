@@ -32,3 +32,6 @@ buildNumber.properties
 # do NOT ignore the Maven Wrapper; it should be committed
 # .mvn/wrapper/**  <-- keep
 # mvnw & |oai:code-citation|
+
+# data files
+data-storage
