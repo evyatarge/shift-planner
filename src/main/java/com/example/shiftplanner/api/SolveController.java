@@ -40,6 +40,12 @@ public class SolveController {
         List<Employee> employees = new ArrayList<>();
         if (req.employees() != null) {
             for (EmployeeDTO e : req.employees()) {
+                // Skip inactive employees if DTO exposes 'active' (Boolean)
+                try {
+                    var m = e.getClass().getMethod("active");
+                    Object val = m.invoke(e);
+                    if (val instanceof Boolean b && !b) continue;
+                } catch (Exception ignore) {}
                 employees.add(new Employee(e.id()!=null?e.id():idGen.getAndIncrement(), e.name(), e.skills()));
             }
         }
