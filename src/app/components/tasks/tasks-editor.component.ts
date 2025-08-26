@@ -46,8 +46,4 @@ export class TasksEditorComponent {
     this.tasksChange.emit(this.tasks);
   }
 
-  getDateTime(dateTime: string): string {
-    const date = new Date(dateTime);
-    return String(date.toLocaleTimeString());
-  }
 }

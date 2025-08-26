@@ -19,6 +19,10 @@ export class EmployeesEditorComponent {
   @Input() employees: Employee[] = [];
   @Output() employeesChange = new EventEmitter<Employee[]>();
 
+  
+  newNamesList = '';
+
+
   newName = '';
   newSkill = '';
   tempSkills: string[] = [];
@@ -29,6 +33,23 @@ export class EmployeesEditorComponent {
       this.newSkill = '';
     }
   }
+
+  
+  
+  addEmployeesList() {
+    if (!this.newNamesList.trim()) return;
+
+    const parsedEmpList = this.newNamesList.split(',');
+    parsedEmpList.forEach(emp => {
+      this.newName = emp;
+      this.addEmployee();
+    });
+    
+    this.newNamesList = '';
+    this.tempSkills = [];
+  }
+
+
 
   addEmployee() {
     if (!this.newName.trim()) return;
@@ -66,7 +87,12 @@ export class EmployeesEditorComponent {
   }
 
   remove(emp: Employee) {
-    this.employees = this.employees.filter(e => e !== emp);
-    this.employeesChange.emit(this.employees);
+    // TODO - add a confirmation to remove employee
+    
+    // const confirmed = confirm('בטוח שברצונך למחוק את '+emp.name);
+    // if (confirmed) {
+      this.employees = this.employees.filter(e => e !== emp);
+      this.employeesChange.emit(this.employees);
+    // }
   }
 }

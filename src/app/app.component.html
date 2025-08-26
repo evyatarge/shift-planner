@@ -2,21 +2,30 @@
   <h1>{{ title }}</h1>
 
   <div class="card">
-    <h2>לוחמים</h2>
-    <app-employees-editor [employees]="employees" (employeesChange)="onEmployeesChange($event)"></app-employees-editor>
+    <h3>לוחמים</h3>
+    <app-employees-editor [(employees)]="employees" (employeesChange)="onEmployeesChange($event)"></app-employees-editor>
+    <div class="flex">
+      <button mat-raised-button color="primary" (click)="saveEmployees()">שמור עובדים</button>
+    </div>
   </div>
 
   <div class="card">
-    <h2>משימות / משמרות</h2>
-    <app-tasks-editor [tasks]="tasks" (tasksChange)="onTasksChange($event)"></app-tasks-editor>
+    <h3>משימות</h3>
+    <app-tasks-editor [(tasks)]="tasks" (tasksChange)="onTasksChange($event)"></app-tasks-editor>
   </div>
 
   <div class="flex">
-    <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">הרץ תכנון</button>
-    <span *ngIf="solving">מחשב פתרון...</span>
-  </div>
+    <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">
+      {{ solving ? 'מחשב...' : 'שבץ באופן אופטימלי' }}
+    </button>
+  </div> 
 
   <div class="card" *ngIf="result">
+    <h3>תוצאה</h3>
     <app-results-view [result]="result"></app-results-view>
+  </div>
+
+  <div class="card" *ngIf="explanation">
+    <app-explanation-panel [explanation]="explanation"></app-explanation-panel>
   </div>
 </div>

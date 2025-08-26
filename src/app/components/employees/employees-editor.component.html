@@ -3,8 +3,13 @@
     <mat-label>שם הלוחם</mat-label>
     <input matInput [(ngModel)]="newName" />
   </mat-form-field>
-
   <button mat-raised-button color="primary" (click)="addEmployee()">הוסף לוחם</button>
+<!-- list of employees ??? -->
+  <mat-form-field appearance="outline">
+    <mat-label>הוסף רשימה</mat-label>
+    <input matInput [(ngModel)]="newNamesList" />
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="addEmployeesList()">הוסף רשימת לוחמים</button>
 </div>
 
 <div class="flex">
