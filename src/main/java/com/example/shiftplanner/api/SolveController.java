@@ -74,7 +74,7 @@ public class SolveController {
 
         int minRestHours = (req.minRestHours() != null) ? req.minRestHours() : 0; // ברירת מחדל: 0ברירת מחדל: 0
         String restMode = (req.restMode() != null) ? req.restMode() : "SOFT";
-        var settingsList = java.util.List.of(new com.example.shiftplanner.domain.SchedulingSettings(minRestHours, restMode));
+        var settingsList = List.of(new com.example.shiftplanner.domain.SchedulingSettings(minRestHours, restMode));
 
         Schedule problem = new Schedule(employees, tasks, avails, slots, settingsList);
 

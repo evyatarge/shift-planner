@@ -1,5 +1,6 @@
 package com.example.shiftplanner.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -30,7 +31,8 @@ public class Schedule {
     @PlanningScore
     private HardSoftLongScore score;
 
-    private List<SchedulingSettings> settingsList;
+    @ProblemFactCollectionProperty
+    private List<SchedulingSettings> settingsList = new ArrayList<>();
 
     public Schedule(){}
 

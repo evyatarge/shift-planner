@@ -83,8 +83,8 @@ public class ShiftConstraintProvider implements ConstraintProvider {
 
     // 2) Soft: minimum rest hours (when restMode=SOFT)
     private Constraint minRestBetweenShiftsSoft(ConstraintFactory f) {
-        return f.fromUniquePair(Assignment.class,
-                Joiners.equal(a -> a.getEmployee() != null ? a.getEmployee().getId() : null))
+        return f.forEachUniquePair(Assignment.class,
+                        Joiners.equal(a -> a.getEmployee() != null ? a.getEmployee().getId() : null))
                 .join(SchedulingSettings.class)
                 .filter((a, b, s) -> s.isSoftMode())
                 .penalizeLong("Min rest between shifts (soft)", SOFT, (a, b, s) -> {
