@@ -17,8 +17,11 @@ public class ShiftConstraintProvider implements ConstraintProvider {
             requiredSkills(factory),
             noOverlappingForSameEmployee(factory),
             assignEverySlot(factory),
-            respectAvailability(factory), // has effect only if availability facts are present
-            softPreferShorterTotalWork(factory)
+            respectAvailability(factory),
+            softPreferShorterTotalWork(factory),
+            noConsecutiveShiftsHard(factory),
+            minRestBetweenShiftsSoft(factory),
+            minRestBetweenShiftsHard(factory)
         };
     }
 
@@ -60,6 +63,58 @@ public class ShiftConstraintProvider implements ConstraintProvider {
             .filter(a -> a.getEmployee() != null)
             .groupBy(Assignment::getEmployee, ConstraintCollectors.sumLong(a -> durationMinutes(a.getTask())))
             .penalizeLong("Total work minutes", SOFT, (emp, minutes) -> minutes);
+    }
+
+    // Hard constraint: no two consecutive shifts for the same employee
+    private Constraint noConsecutiveShiftsHard(ConstraintFactory f) {
+        return f.fromUniquePair(Assignment.class,
+                Joiners.equal(a -> a.getEmployee() != null ? a.getEmployee().getId() : null),
+                Joiners.filtering((a, b) -> {
+                    if (a.getEmployee() == null || b.getEmployee() == null)
+                        return false;
+                    Task t1 = a.getTask(), t2 = b.getTask();
+                    var aFirst = t1.getStart().isBefore(t2.getStart());
+                    var earlier = aFirst ? t1 : t2;
+                    var later = aFirst ? t2 : t1;
+                    return earlier.getEnd().equals(later.getStart()); // רצופות בדיוק
+                }))
+                .penalize("Back-to-back shifts for same employee", HARD);
+    }
+
+    // 2) Soft: minimum rest hours (when restMode=SOFT)
+    private Constraint minRestBetweenShiftsSoft(ConstraintFactory f) {
+        return f.fromUniquePair(Assignment.class,
+                Joiners.equal(a -> a.getEmployee() != null ? a.getEmployee().getId() : null))
+                .join(SchedulingSettings.class)
+                .filter((a, b, s) -> s.isSoftMode())
+                .penalizeLong("Min rest between shifts (soft)", SOFT, (a, b, s) -> {
+                    Task t1 = a.getTask(), t2 = b.getTask();
+                    var aFirst = t1.getStart().isBefore(t2.getStart());
+                    var earlier = aFirst ? t1 : t2;
+                    var later = aFirst ? t2 : t1;
+                    long gapMinutes = java.time.Duration.between(earlier.getEnd(), later.getStart()).toMinutes();
+                    int requiredMinutes = s.getMinRestHours() * 60;
+                    int deficit = (int) Math.max(0, requiredMinutes - gapMinutes);
+                    return deficit; // קנס פר דקת חסר
+                });
+    }
+
+    // 3) Hard: minimum rest hours (when restMode=HARD)
+    private Constraint minRestBetweenShiftsHard(ConstraintFactory f) {
+        return f.fromUniquePair(Assignment.class,
+                Joiners.equal(a -> a.getEmployee() != null ? a.getEmployee().getId() : null))
+                .join(SchedulingSettings.class)
+                .filter((a, b, s) -> s.isHardMode())
+                .filter((a, b, s) -> {
+                    Task t1 = a.getTask(), t2 = b.getTask();
+                    var aFirst = t1.getStart().isBefore(t2.getStart());
+                    var earlier = aFirst ? t1 : t2;
+                    var later = aFirst ? t2 : t1;
+                    long gapMinutes = java.time.Duration.between(earlier.getEnd(), later.getStart()).toMinutes();
+                    long requiredMinutes = (long) s.getMinRestHours() * 60L;
+                    return gapMinutes < requiredMinutes; // הפרה קשיחה
+                })
+                .penalize("Min rest between shifts (hard)", HARD);
     }
 
     private static boolean overlaps(Task t1, Task t2) {

@@ -1,6 +1,12 @@
 
 package com.example.shiftplanner.api;
 
+import com.example.shiftplanner.api.Dtos.AssignmentDTO;
+import com.example.shiftplanner.api.Dtos.AvailabilityDTO;
+import com.example.shiftplanner.api.Dtos.EmployeeDTO;
+import com.example.shiftplanner.api.Dtos.ScheduleRequest;
+import com.example.shiftplanner.api.Dtos.SolveResponse;
+import com.example.shiftplanner.api.Dtos.TaskDTO;
 import com.example.shiftplanner.domain.*;
 
 import static com.example.shiftplanner.api.Dtos.*;
@@ -60,7 +66,11 @@ public class SolveController {
             }
         }
 
-        Schedule problem = new Schedule(employees, tasks, avails, slots);
+        int minRestHours = (req.minRestHours() != null) ? req.minRestHours() : 0; // ברירת מחדל: 0ברירת מחדל: 0
+        String restMode = (req.restMode() != null) ? req.restMode() : "SOFT";
+        var settingsList = java.util.List.of(new com.example.shiftplanner.domain.SchedulingSettings(minRestHours, restMode));
+
+        Schedule problem = new Schedule(employees, tasks, avails, slots, settingsList);
 
         // Build a Solver and solve synchronously (simple and robust)
         SolverFactory<Schedule> factory = SolverFactory.create(solverConfig);

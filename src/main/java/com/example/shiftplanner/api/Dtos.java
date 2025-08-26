@@ -11,7 +11,13 @@ public class Dtos {
     public record AvailabilityDTO(Long employeeId, LocalDateTime start, LocalDateTime end) {}
 
     /** 'availabilities' is optional; omit or send empty list when feature is off. */
-    public record ScheduleRequest(List<EmployeeDTO> employees, List<TaskDTO> tasks, List<AvailabilityDTO> availabilities) {}
+    public record ScheduleRequest(
+        List<EmployeeDTO> employees,
+        List<TaskDTO> tasks,
+        List<AvailabilityDTO> availabilities,
+        Integer minRestHours,
+        String restMode // "HARD"/"SOFT" - consider to change to enum
+    ) {}
 
     public record AssignmentDTO(Long taskId, String taskName, LocalDateTime start, LocalDateTime end, Set<String> requiredSkills,
                                 Long employeeId, String employeeName) {}
