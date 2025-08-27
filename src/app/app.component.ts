@@ -100,10 +100,20 @@ export class AppComponent implements OnInit {
     this.solving = true;
     this.result = null;
     this.explanation = null;
-    this.api.solve(req).subscribe({
-      next: res => { this.result = res; this.solving = false; },
-      error: err => { console.error(err); this.solving = false; }
-    });
+    this.checkActiveEmployees(activeEmployees);
+    if (activeEmployees.length !== 0) {
+      this.api.solve(req).subscribe({
+        next: res => { this.result = res; this.solving = false; },
+        error: err => { console.error(err); this.solving = false; }
+      });
+    }
+  }
+
+  checkActiveEmployees(activeEmployees: Employee[]) {
+    if (activeEmployees.length === 0) {
+      this.snack.open('אין עובדים פעילים', 'x', { duration: 2500 });
+    }
+
   }
 
 }

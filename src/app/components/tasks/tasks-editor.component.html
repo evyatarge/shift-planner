@@ -36,6 +36,13 @@
   <button mat-raised-button color="primary" (click)="addTask()">הוסף משימה</button>
 </div>
 
+<!-- CSV list -->
+<div class="flex">
+  <input type="file" accept=".csv" (change)="onCsv($event)" style="margin-inline-start:16px;">
+  <button mat-stroked-button (click)="downloadCsvTemplate()">הורד תבנית CSV</button>
+  <div style="color: gray; margin-inline-start: 8px;">שם,התחלה,סיום,כישורים נדרשים,כמות לוחמים</div>
+</div>
+
 <div class="card" *ngFor="let t of tasks">
   <div class="flex" style="align-items:center; justify-content:space-between">
     <div>

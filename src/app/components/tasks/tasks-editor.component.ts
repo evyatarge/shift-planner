@@ -46,4 +46,53 @@ export class TasksEditorComponent {
     this.tasksChange.emit(this.tasks);
   }
 
+  onCsv(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const file = input.files && input.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = String(reader.result || '');
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      if (!lines.length) return;
+
+      // Detect header (hebrew/english)
+      const headerTokens = lines[0].split(/[\,\t;|]/).map(t => t.trim().toLowerCase());
+      const isHeader = headerTokens.some(t => ['name','שם'].includes(t)) ||
+                       headerTokens.some(t => ['start','התחלה','שעה התחלה'].includes(t)) ||
+                       headerTokens.some(t => ['end','סיום','שעה סיום'].includes(t));
+      const startIdx = isHeader ? 1 : 0;
+
+      let maxId = this.tasks.length ? Math.max(...this.tasks.map(t => t.id)) : 0;
+      for (let i = startIdx; i < lines.length; i++) {
+        const raw = lines[i];
+        const cols = raw.split(',');
+        // Expected order: name,start,end,requiredSkills,requiredEmployees
+        const name = (cols[0] || '').trim();
+        const start = (cols[1] || '').trim();
+        const end = (cols[2] || '').trim();
+        const skillsPart = (cols[3] || '').trim();
+        const reqEmpStr = (cols[4] || '').trim();
+        if (!name || !start || !end) continue;
+        const requiredSkills = skillsPart ? skillsPart.split(/[;|]/).map(s => s.trim()).filter(Boolean) : [];
+        const requiredEmployees = Math.max(1, Number.parseInt(reqEmpStr || '1', 10) || 1);
+        maxId += 1;
+        this.tasks.push({ id: maxId, name, start, end, requiredSkills, requiredEmployees });
+      }
+      this.tasks = [...this.tasks];
+      this.tasksChange.emit(this.tasks);
+      input.value = '';
+    };
+    reader.readAsText(file);
+  }
+
+  downloadCsvTemplate() {
+    const content = "שם,התחלה,סיום,כישורים נדרשים,כמות לוחמים\n" +
+                    "שמירה,2025-08-24T08:00,2025-08-24T16:00,מפקד;נהג,2\n" +
+                    "חמ" + "ל,2025-08-24T16:00,2025-08-24T23:00,חמליסט,1\n";
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'tasks_template.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
 }
