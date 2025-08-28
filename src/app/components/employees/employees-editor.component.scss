@@ -3,3 +3,9 @@
 .mono{ font-family: ui-monospace, Menlo, Consolas, monospace; }
 .emp-row { display:flex; justify-content:space-between; align-items:center; }
 .chips { margin-top:8px; }
+:host ::ng-deep .mdc-form-field.mat-internal-form-field {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  gap: 4px;
+}

@@ -48,10 +48,16 @@ export class AppComponent implements OnInit {
     });
     this.api.getTasks().subscribe({
       next: tasksList => {
+        this.convertTasksTimesTo000Z(tasksList); // TODO - should fix and change
+
         if (tasksList?.length) this.tasks = tasksList;
       },
       error: err => { console.error('Failed to load saved tasks (using defaults).', err); }
     });
+  }
+
+  private convertTasksTimesTo000Z(tasksList: Task[]) {
+    tasksList.forEach(task => { task.start += '.000Z'; task.end += '.000Z'; });
   }
 
   onEmployeesChange(list: Employee[]) { this.employees = list; }
@@ -75,6 +81,7 @@ export class AppComponent implements OnInit {
     this.api.saveTasks(this.tasks).subscribe({
       next: savedTasks => {
         this.snack.open('המשימות נשמרו', 'x', { duration: 1800 });
+        this.convertTasksTimesTo000Z(savedTasks);
         this.tasks = savedTasks;
       },
       error: err => {

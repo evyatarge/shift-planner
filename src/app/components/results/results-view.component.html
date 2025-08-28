@@ -10,7 +10,7 @@
 
     <ng-container matColumnDef="time">
       <th mat-header-cell *matHeaderCellDef> זמן </th>
-      <td mat-cell *matCellDef="let a" style="direction: ltr;"> {{ parseUtcDate(a.start) | date:'shortTime' }} → {{ parseUtcDate(a.end) | date:'shortTime' }} </td>
+      <td mat-cell *matCellDef="let a" style="direction: ltr;"> {{ a.start | date:'shortTime' }} → {{ a.end | date:'shortTime' }} </td>
     </ng-container>
 
     <ng-container matColumnDef="employee">

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Employee } from '../../models';
+import { ApiService } from 'src/app/services/api.service';
 
 @Component({
   selector: 'app-employees-editor',
@@ -28,6 +29,8 @@ export class EmployeesEditorComponent {
   newNamesList = '';
   newSkill = '';
   tempSkills: string[] = [];
+
+  private api = inject(ApiService);
 
   addSkill() {
     const s = this.newSkill.trim();
@@ -126,6 +129,47 @@ export class EmployeesEditorComponent {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'employees_template.csv'; a.click();
     URL.revokeObjectURL(url);
+  }
+
+
+  exportCsvFromServer() {
+    // ייצוא העובדים השמורים מהשרת (האמת העדכנית שנשמרה)
+    this.api.getEmployees().subscribe({
+      next: list => this.downloadCsv(list ?? []),
+      error: _ => this.downloadCsv(this.employees ?? []) // נפילה? נייצא מהמצב הנוכחי
+    });
+  }
+
+  exportCsvFromScreen() {
+    // ייצוא מיידי ממה שמוצג כרגע (גם אם לא נשמר)
+    this.downloadCsv(this.employees ?? []);
+  }
+
+  private downloadCsv(list: Employee[]) {
+    const lines: string[] = [];
+    lines.push('name,skills'); // כותרת תואמת ליבוא
+    for (const e of list) {
+      const name = this.csv(e.name ?? '');
+      const skills = this.csv((e.skills ?? []).join(';')); // מפריד כישורים ב־;
+      lines.push(`${name},${skills}`);
+    }
+    const csv = lines.join('\r\n');
+    // הוסף BOM כדי שאקסל יזהה עברית/UTF‑8 נכון
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `employees_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }
+
+  private csv(v: string): string {
+    // CSV escaping: הכפלת מרכאות ועיטוף במקרה הצורך
+    const needsQuote = /[",;\n\r]/.test(v);
+    const escaped = v.replace(/"/g, '""');
+    return needsQuote ? `"${escaped}"` : escaped;
   }
 
   private emit(){ this.employeesChange.emit(this.employees); }

@@ -95,9 +95,4 @@ export class TasksEditorComponent {
     URL.revokeObjectURL(url);
   }
 
-  parseUtcDate(dateString: string): Date {
-    // Parse the date string as UTC, then convert to local time for display
-    return new Date(dateString + 'Z');
-  }
-
 }
