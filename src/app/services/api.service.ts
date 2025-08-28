@@ -39,6 +39,7 @@ export class ApiService {
     return this.http.get<Task[]>(`${this.base}/tasks`);
   }
   saveTasks(tasks: Task[]): Observable<Task[]> {
+    console.log('api: ', tasks);
     return this.http.post<Task[]>(`${this.base}/tasks`, tasks);
   }
 }

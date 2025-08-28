@@ -11,4 +11,9 @@ import { SolveResponse } from '../../models';
 })
 export class ResultsViewComponent {
   @Input() result!: SolveResponse;
+
+  parseUtcDate(dateString: string): Date {
+    // Parse the date string as UTC, then convert to local time for display
+    return new Date(dateString + 'Z');
+  }
 }

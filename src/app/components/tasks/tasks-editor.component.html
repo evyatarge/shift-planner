@@ -43,14 +43,16 @@
   <div style="color: gray; margin-inline-start: 8px;">שם,התחלה,סיום,כישורים נדרשים,כמות לוחמים</div>
 </div>
 
-<div class="card" *ngFor="let t of tasks">
+@for (t of tasks; track t.id) {
+<div class="card">
   <div class="flex" style="align-items:center; justify-content:space-between">
     <div>
       <strong>{{ t.name }}</strong>
-      <div class="mono" style="direction: ltr;">{{ t.start | date:'short' }} → {{ t.end | date:'short' }}</div>
+      <div class="mono" style="direction: ltr;">{{ parseUtcDate(t.start) | date:'short' }} → {{ parseUtcDate(t.end) | date:'short' }}</div>
       <div>כישורים: <span class="mono">{{ t.requiredSkills.join(', ') || '—' }}</span></div>
       <div>לוחמים דרושים: {{ t.requiredEmployees }}</div>
     </div>
     <button mat-button color="warn" (click)="remove(t)">מחק</button>
   </div>
 </div>
+}

@@ -47,13 +47,15 @@ export class AppComponent implements OnInit {
       error: err => { console.error('Failed to load saved employees (using defaults).', err); }
     });
     this.api.getTasks().subscribe({
-      next: tasksList => { if (tasksList?.length) this.tasks = tasksList; },
+      next: tasksList => {
+        if (tasksList?.length) this.tasks = tasksList;
+      },
       error: err => { console.error('Failed to load saved tasks (using defaults).', err); }
     });
   }
 
   onEmployeesChange(list: Employee[]) { this.employees = list; }
-  onTasksChange(list: Task[]) { this.tasks = list; }
+  onTasksChange(list: Task[]) { this.tasks = list; console.log('tasks change: ', list, list[list.length-1])}
 
   saveEmployees(): void {
     const payload = this.employees.map(({active, ...rest}) => rest as Employee);
