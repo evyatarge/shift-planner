@@ -61,6 +61,14 @@ public class ShiftConstraintProvider implements ConstraintProvider {
             .penalize("Unassigned slot", SOFT);
     }
 
+    // Encourage using more/different employees by discouraging many assignments for the same person
+    private Constraint spreadWorkAcrossEmployeesSoft(ConstraintFactory factory) {
+        return factory.from(Assignment.class)
+            .filter(a -> a.getEmployee() != null)
+            .groupBy(Assignment::getEmployee, ConstraintCollectors.count())
+            .penalizeLong("Spread work across employees", SOFT, (emp, count) -> Math.max(0L, (long)count - 1L));
+    }
+
     private Constraint respectAvailability(ConstraintFactory factory) {
         // If no Availability facts exist, join won't match and no penalties will be applied.
         return factory.from(Assignment.class)
@@ -72,14 +80,6 @@ public class ShiftConstraintProvider implements ConstraintProvider {
                 return t.getStart().isBefore(av.getStart()) || t.getEnd().isAfter(av.getEnd());
             })
             .penalize("Outside availability", HARD);
-    }
-
-    // Encourage using more/different employees by discouraging many assignments for the same person
-    private Constraint spreadWorkAcrossEmployeesSoft(ConstraintFactory factory) {
-        return factory.from(Assignment.class)
-            .filter(a -> a.getEmployee() != null)
-            .groupBy(Assignment::getEmployee, ConstraintCollectors.count())
-            .penalizeLong("Spread work across employees", SOFT, (emp, count) -> Math.max(0L, (long)count - 1L));
     }
 
     // Hard constraint: no two consecutive shifts for the same employee

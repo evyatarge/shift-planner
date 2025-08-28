@@ -1,7 +1,5 @@
 package com.example.shiftplanner.api;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +24,8 @@ public class TemplatesController {
             for (RoleReqDTO r : t.roles()) {
                 if (r.count() <= 0) continue;
                 String name = t.name() + " – " + r.skill();
-                var start = req.date().atTime(t.start()).atZone(ZoneOffset.UTC);
-                var end   = req.date().atTime(t.end()).atZone(ZoneOffset.UTC);
+                var start = req.date().atTime(t.start());
+                var end   = req.date().atTime(t.end());
                 out.add(new TaskDTO(id++, name, start, end, Set.of(r.skill()), r.count()));
             }
         }
