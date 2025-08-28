@@ -35,3 +35,7 @@ buildNumber.properties
 
 # data files
 data-storage
+
+# Explain files
+src/main/java/com/example/shiftplanner/api/ExplainController.java
+src/main/java/com/example/shiftplanner/api/ExplainDtos.java

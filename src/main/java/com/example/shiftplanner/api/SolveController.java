@@ -1,4 +1,3 @@
-
 package com.example.shiftplanner.api;
 
 import com.example.shiftplanner.api.Dtos.AssignmentDTO;
@@ -8,8 +7,6 @@ import com.example.shiftplanner.api.Dtos.ScheduleRequest;
 import com.example.shiftplanner.api.Dtos.SolveResponse;
 import com.example.shiftplanner.api.Dtos.TaskDTO;
 import com.example.shiftplanner.domain.*;
-
-import static com.example.shiftplanner.api.Dtos.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -67,13 +64,24 @@ public class SolveController {
 
         List<Assignment> slots = new ArrayList<>();
         for (Task t : tasks) {
-            for (int i=0; i<t.getRequiredEmployees(); i++) {
+            var reqSkills = t.getRequiredSkills();
+            int headcount = Math.max(1, t.getRequiredEmployees());
+            int roleCount = (reqSkills == null) ? 0 : reqSkills.size();
+
+            // Create one slot per required skill (role)
+            if (reqSkills != null) {
+                for (String skill : reqSkills) {
+                    slots.add(new Assignment(idGen.getAndIncrement(), t, skill));
+                }
+            }
+            // Remaining generic slots if headcount exceeds number of distinct role skills
+            for (int i = roleCount; i < headcount; i++) {
                 slots.add(new Assignment(idGen.getAndIncrement(), t));
             }
         }
 
-        int minRestHours = (req.minRestHours() != null) ? req.minRestHours() : 0; // ברירת מחדל: 0ברירת מחדל: 0
-        String restMode = (req.restMode() != null) ? req.restMode() : "SOFT";
+        int minRestHours = (req.minRestHours() != null) ? req.minRestHours() : 4;
+        String restMode = (req.restMode() != null) ? req.restMode() : "HARD";
         var settingsList = List.of(new com.example.shiftplanner.domain.SchedulingSettings(minRestHours, restMode));
 
         Schedule problem = new Schedule(employees, tasks, avails, slots, settingsList);

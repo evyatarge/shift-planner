@@ -1,6 +1,6 @@
 package com.example.shiftplanner.domain;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.Set;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
@@ -11,20 +11,20 @@ public class Task {
     @PlanningId
     private Long id;
     private String name;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private ZonedDateTime start;
+    private ZonedDateTime end;
     private Set<String> requiredSkills;
     private int requiredEmployees;
 
     public Task() {}
-    public Task(Long id, String name, LocalDateTime start, LocalDateTime end, Set<String> requiredSkills, int requiredEmployees) {
+    public Task(Long id, String name, ZonedDateTime start, ZonedDateTime end, Set<String> requiredSkills, int requiredEmployees) {
         this.id = id; this.name = name; this.start = start; this.end = end; this.requiredSkills = requiredSkills; this.requiredEmployees = requiredEmployees;
     }
 
     public Long getId(){return id;} public void setId(Long id){this.id=id;}
     public String getName(){return name;} public void setName(String name){this.name=name;}
-    public LocalDateTime getStart(){return start;} public void setStart(LocalDateTime start){this.start=start;}
-    public LocalDateTime getEnd(){return end;} public void setEnd(LocalDateTime end){this.end=end;}
+    public ZonedDateTime getStart(){return start;} public void setStart(ZonedDateTime start){this.start=start;}
+    public ZonedDateTime getEnd(){return end;} public void setEnd(ZonedDateTime end){this.end=end;}
     public Set<String> getRequiredSkills(){return requiredSkills;} public void setRequiredSkills(Set<String> s){this.requiredSkills=s;}
     public int getRequiredEmployees(){return requiredEmployees;} public void setRequiredEmployees(int n){this.requiredEmployees=n;}
 

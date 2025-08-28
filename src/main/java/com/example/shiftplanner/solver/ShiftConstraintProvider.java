@@ -15,10 +15,11 @@ public class ShiftConstraintProvider implements ConstraintProvider {
     public Constraint[] defineConstraints(ConstraintFactory factory) {
         return new Constraint[] {
             requiredSkills(factory),
+            requiredRoleOnSlot(factory),
             noOverlappingForSameEmployee(factory),
-            assignEverySlot(factory),
+            preferAssignEverySlotSoft(factory),
             respectAvailability(factory),
-            softPreferShorterTotalWork(factory),
+            spreadWorkAcrossEmployeesSoft(factory),
             noConsecutiveShiftsHard(factory),
             minRestBetweenShiftsSoft(factory),
             minRestBetweenShiftsHard(factory)
@@ -27,9 +28,24 @@ public class ShiftConstraintProvider implements ConstraintProvider {
 
     private Constraint requiredSkills(ConstraintFactory factory) {
         return factory.from(Assignment.class)
-            .filter(a -> a.getEmployee() != null
-                && !a.getEmployee().getSkills().containsAll(a.getTask().getRequiredSkills()))
-            .penalize("Missing required skills", HARD);
+            .filter(a -> {
+                if (a.getEmployee() == null) return false;
+                var required = a.getTask().getRequiredSkills();
+                if (required == null || required.isEmpty()) return false; // no required skills
+                var empSkills = a.getEmployee().getSkills();
+                if (empSkills == null || empSkills.isEmpty()) return true; // has requirements but employee has none
+                // Violate if there is no intersection (require at least one of the required skills)
+                return required.stream().noneMatch(empSkills::contains);
+            })
+            .penalize("Missing any-of required skills", HARD);
+    }
+
+    // If a slot has a specific role (requiredSkill set), enforce that the assigned employee has that skill.
+    private Constraint requiredRoleOnSlot(ConstraintFactory factory) {
+        return factory.from(Assignment.class)
+            .filter(a -> a.getEmployee() != null && a.getRequiredSkill() != null
+                && (a.getEmployee().getSkills() == null || !a.getEmployee().getSkills().contains(a.getRequiredSkill())))
+            .penalize("Missing required role on slot", HARD);
     }
 
     private Constraint noOverlappingForSameEmployee(ConstraintFactory factory) {
@@ -39,10 +55,10 @@ public class ShiftConstraintProvider implements ConstraintProvider {
             .penalize("Overlapping tasks for same employee", HARD);
     }
 
-    private Constraint assignEverySlot(ConstraintFactory factory) {
+    private Constraint preferAssignEverySlotSoft(ConstraintFactory factory) {
         return factory.from(Assignment.class)
             .filter(a -> a.getEmployee() == null)
-            .penalize("Unassigned slot", HARD);
+            .penalize("Unassigned slot", SOFT);
     }
 
     private Constraint respectAvailability(ConstraintFactory factory) {
@@ -58,11 +74,12 @@ public class ShiftConstraintProvider implements ConstraintProvider {
             .penalize("Outside availability", HARD);
     }
 
-    private Constraint softPreferShorterTotalWork(ConstraintFactory factory) {
+    // Encourage using more/different employees by discouraging many assignments for the same person
+    private Constraint spreadWorkAcrossEmployeesSoft(ConstraintFactory factory) {
         return factory.from(Assignment.class)
             .filter(a -> a.getEmployee() != null)
-            .groupBy(Assignment::getEmployee, ConstraintCollectors.sumLong(a -> durationMinutes(a.getTask())))
-            .penalizeLong("Total work minutes", SOFT, (emp, minutes) -> minutes);
+            .groupBy(Assignment::getEmployee, ConstraintCollectors.count())
+            .penalizeLong("Spread work across employees", SOFT, (emp, count) -> Math.max(0L, (long)count - 1L));
     }
 
     // Hard constraint: no two consecutive shifts for the same employee
