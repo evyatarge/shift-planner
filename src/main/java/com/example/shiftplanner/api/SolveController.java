@@ -39,7 +39,7 @@ public class SolveController {
             for (EmployeeDTO e : req.employees()) {
                 // Skip inactive employees if DTO exposes 'active' (Boolean)
                 try {
-                    var m = e.getClass().getMethod("active");
+                    var m = e.getClass().getMethod("getActive");
                     Object val = m.invoke(e);
                     if (val instanceof Boolean b && !b) continue;
                 } catch (Exception ignore) {}

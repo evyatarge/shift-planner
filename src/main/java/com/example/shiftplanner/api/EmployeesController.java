@@ -23,7 +23,7 @@ public class EmployeesController {
         List<Employee> list = store.load();
         List<EmployeeDTO> out = new ArrayList<>();
         for (Employee e : list) {
-            out.add(new EmployeeDTO(e.getId(), e.getName(), e.getSkills()));
+            out.add(new EmployeeDTO(e.getId(), e.getName(), e.getSkills(), e.getActive()));
         }
         return out;
     }
@@ -37,12 +37,12 @@ public class EmployeesController {
         for (EmployeeDTO d : dtos) {
             if (d.id() == null) throw new IllegalArgumentException("Employee id is required");
             if (!ids.add(d.id())) throw new IllegalArgumentException("Duplicate employee id: " + d.id());
-            list.add(new Employee(d.id(), d.name(), d.skills()));
+            list.add(new Employee(d.id(), d.name(), d.skills(), d.active()));
         }
         List<Employee> saved = store.save(list);
         List<EmployeeDTO> out = new ArrayList<>();
         for (Employee e : saved) {
-            out.add(new EmployeeDTO(e.getId(), e.getName(), e.getSkills()));
+            out.add(new EmployeeDTO(e.getId(), e.getName(), e.getSkills(), e.getActive()));
         }
         return out;
     }

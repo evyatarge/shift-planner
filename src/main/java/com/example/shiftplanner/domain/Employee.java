@@ -11,10 +11,14 @@ public class Employee {
     private Long id;
     private String name;
     private Set<String> skills;
+    private Boolean active;
 
     public Employee() {}
     public Employee(Long id, String name, Set<String> skills) {
         this.id = id; this.name = name; this.skills = skills;
+    }
+    public Employee(Long id, String name, Set<String> skills, Boolean active) {
+        this.id = id; this.name = name; this.skills = skills; this.active = active;
     }
 
     public Long getId() { return id; }
@@ -25,6 +29,9 @@ public class Employee {
 
     public Set<String> getSkills() { return skills; }
     public void setSkills(Set<String> skills) { this.skills = skills; }
+
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 
     @Override public boolean equals(Object o){ return o instanceof Employee e && Objects.equals(id,e.id); }
     @Override public int hashCode(){ return Objects.hash(id); }

@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class Dtos {
 
-    public record EmployeeDTO(Long id, String name, Set<String> skills) {}
+    public record EmployeeDTO(Long id, String name, Set<String> skills, Boolean active) {}
     public record TaskDTO(Long id, String name, LocalDateTime start, LocalDateTime end, Set<String> requiredSkills, int requiredEmployees) {}
     public record AvailabilityDTO(Long employeeId, LocalDateTime start, LocalDateTime end) {}
 
