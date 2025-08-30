@@ -64,11 +64,11 @@ export class AppComponent implements OnInit {
   onTasksChange(list: Task[]) { this.tasks = list; console.log('tasks change: ', list, list[list.length-1])}
 
   saveEmployees(): void {
-    const payload = this.employees.map(({active, ...rest}) => rest as Employee);
+    const payload = this.employees;
     this.api.saveEmployees(payload).subscribe({
       next: savedEmps => {
         this.snack.open('העובדים נשמרו בהצלחה', 'x', { duration: 1800 });
-        this.employees = savedEmps.map(employee => ({...employee, active: true}));
+        this.employees = savedEmps;
       },
       error: err => {
         console.error('Failed to save employees.', err);
