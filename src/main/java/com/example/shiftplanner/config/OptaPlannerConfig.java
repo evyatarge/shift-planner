@@ -23,6 +23,6 @@ public class OptaPlannerConfig {
             .withEntityClasses(Assignment.class)
             .withScoreDirectorFactory(new ScoreDirectorFactoryConfig()
                 .withConstraintProviderClass(ShiftConstraintProvider.class))
-            .withTerminationConfig(new TerminationConfig().withSpentLimit(Duration.ofSeconds(12))); // if need can increase the timeout to 30sec for more time to solve
+            .withTerminationConfig(new TerminationConfig().withSpentLimit(Duration.ofSeconds(30)));
     }
 }

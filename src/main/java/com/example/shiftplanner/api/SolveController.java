@@ -7,7 +7,12 @@ import com.example.shiftplanner.api.Dtos.ScheduleRequest;
 import com.example.shiftplanner.api.Dtos.SolveResponse;
 import com.example.shiftplanner.api.Dtos.TaskDTO;
 import com.example.shiftplanner.domain.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -80,9 +85,9 @@ public class SolveController {
             }
         }
 
-        int minRestHours = (req.minRestHours() != null) ? req.minRestHours() : 4;
+        int minRestHours = (req.minRestHours() != null || req.minRestHours() != 0) ? req.minRestHours() : 6;
         String restMode = (req.restMode() != null) ? req.restMode() : "HARD";
-        var settingsList = List.of(new com.example.shiftplanner.domain.SchedulingSettings(minRestHours, restMode));
+        var settingsList = List.of(new SchedulingSettings(minRestHours, restMode));
 
         Schedule problem = new Schedule(employees, tasks, avails, slots, settingsList);
 
@@ -104,6 +109,34 @@ public class SolveController {
             }
         }
         String score = best.getScore()!=null ? best.getScore().toString() : "0hard/0soft";
+// Save result to data-storage/result.json, to have last result available to load faster
+        try {
+            Path storageDir = Paths.get("data-storage");
+            Files.createDirectories(storageDir);
+            Path resultFile = storageDir.resolve("result.json");
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.writeValue(resultFile.toFile(), new SolveResponse(out, score, unassigned));
+        } catch (Exception e) {
+            // Log error or handle as needed
+            e.printStackTrace();
+        }
         return new SolveResponse(out, score, unassigned);
+    }
+// getLastResult
+    @GetMapping("/lastResult")
+    public SolveResponse getLastResult() {
+        try {
+            Path resultFile = Paths.get("data-storage/result.json");
+            if (!Files.exists(resultFile)) {
+                return null;
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            return mapper.readValue(resultFile.toFile(), SolveResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
