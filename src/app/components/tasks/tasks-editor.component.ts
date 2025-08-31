@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import { Task } from '../../models';
 
@@ -13,13 +14,13 @@ import { Task } from '../../models';
   templateUrl: './tasks-editor.component.html',
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatTimepickerModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatTimepickerModule, MatCheckboxModule],
 })
 export class TasksEditorComponent {
   @Input() tasks: Task[] = [];
   @Output() tasksChange = new EventEmitter<Task[]>();
 
-  form: Task = { id: 1, name: '', start: '', end: '', requiredSkills: [], requiredEmployees: 1 };
+  form: Task = { id: 1, name: '', start: '', end: '', requiredSkills: [], requiredEmployees: 1, allowEmptySlots: false, is24HourTask: false };
   newSkill = '';
 
   addSkill() {
@@ -38,7 +39,7 @@ export class TasksEditorComponent {
     const taskToAdd: Task = { ...this.form, id };
     this.tasks = [...this.tasks, taskToAdd];
     this.tasksChange.emit(this.tasks);
-    this.form = { id: id + 1, name: '', start: '', end: '', requiredSkills: [], requiredEmployees: 1 };
+    this.form = { id: id + 1, name: '', start: '', end: '', requiredSkills: [], requiredEmployees: 1, allowEmptySlots: false, is24HourTask: false };
   }
 
   remove(task: Task) {

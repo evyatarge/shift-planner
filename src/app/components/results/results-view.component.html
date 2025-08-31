@@ -1,4 +1,7 @@
 <div>
+  @if (result.timestamp) {
+    <div><strong>נוצר בתאריך:</strong> {{ result.timestamp | date:'short' }}</div>
+  }
   <div><strong>Score:</strong> {{ result.score }}</div>
   <div><strong>Unassigned slots:</strong> {{ result.unassignedCount }}</div>
 

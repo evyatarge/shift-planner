@@ -20,6 +20,9 @@
     <mat-label>לוחמים דרושים</mat-label>
     <input type="number" matInput [(ngModel)]="form.requiredEmployees" min="1">
   </mat-form-field>
+  
+  <mat-checkbox [(ngModel)]="form.allowEmptySlots">אפשר חריגים ריקים</mat-checkbox>
+  <mat-checkbox [(ngModel)]="form.is24HourTask">משימה 24 שעות</mat-checkbox>
 </div>
 
 <div class="flex">
