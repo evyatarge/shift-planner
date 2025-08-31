@@ -2,7 +2,7 @@
   <div><strong>Score:</strong> {{ result.score }}</div>
   <div><strong>Unassigned slots:</strong> {{ result.unassignedCount }}</div>
 
-  <table mat-table [dataSource]="result.assignments" class="mat-elevation-z2" style="width:100%; margin-top:12px">
+  <table mat-table [dataSource]="groupedAssignments" class="mat-elevation-z2" style="width:100%; margin-top:12px">
     <ng-container matColumnDef="task">
       <th mat-header-cell *matHeaderCellDef> משימה </th>
       <td mat-cell *matCellDef="let a"> {{ a.taskName }} </td>
@@ -13,12 +13,12 @@
       <td mat-cell *matCellDef="let a" style="direction: ltr;"> {{ a.start | date:'shortTime' }} → {{ a.end | date:'shortTime' }} </td>
     </ng-container>
 
-    <ng-container matColumnDef="employee">
-      <th mat-header-cell *matHeaderCellDef> לוחם </th>
-      <td mat-cell *matCellDef="let a"> {{ a.employeeName || '—' }} </td>
+    <ng-container matColumnDef="employees">
+      <th mat-header-cell *matHeaderCellDef> לוחמים </th>
+      <td mat-cell *matCellDef="let a"> {{ getEmployeeNames(a) }} </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['task','time','employee']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['task','time','employee'];"></tr>
+    <tr mat-header-row *matHeaderRowDef="['task','time','employees']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['task','time','employees'];"></tr>
   </table>
 </div>

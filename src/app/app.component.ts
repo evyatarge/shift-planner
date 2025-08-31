@@ -54,6 +54,11 @@ export class AppComponent implements OnInit {
       },
       error: err => { console.error('Failed to load saved tasks (using defaults).', err); }
     });
+    // load last result (if any) from backend
+    this.api.getLastResults().subscribe({
+      next: lastResult => { this.result = lastResult; },
+      error: err => { console.info('no last results to load.', err); }
+    });
   }
 
   private convertTasksTimesTo000Z(tasksList: Task[]) {

@@ -4,53 +4,52 @@
     <input matInput [(ngModel)]="newName" name="newName" />
   </mat-form-field>
   <button mat-raised-button color="primary" (click)="addEmployee()">הוסף לוחם</button>
-<!-- list of employees ??? -->
-  <mat-form-field appearance="outline">
+
+  <div class="flex">
+    <mat-form-field appearance="outline">
+      <mat-label>כישור חדש</mat-label>
+      <input matInput [(ngModel)]="newSkill" name="newSkill" (keyup.enter)="addSkill()" />
+    </mat-form-field>
+    <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
+  </div>
+
+  <!-- temporary skills - for the next employee to add -->
+  <span class="card flex">
+
+    כישורים של הלוחם הבא שתוסיף:
+    @for (skill of tempSkills; track $index) {
+      <span class="mono">
+        {{skill}}
+        @if ($index !== tempSkills.length-1) {
+          <span>,</span>
+        }
+      </span>
+    }
+    @if (tempSkills.length === 0) {
+      <span style="color: gray;">חפ״ש</span>
+    }
+  </span>
+
+ <!-- list of employees ??? -->
+  <!-- <mat-form-field appearance="outline">
     <mat-label>הוסף רשימה</mat-label>
     <input matInput [(ngModel)]="newNamesList" name="newNamesList" />
   </mat-form-field>
-  <button mat-raised-button color="primary" (click)="addEmployeesList()">הוסף רשימת לוחמים</button>
+  <button mat-raised-button color="primary" (click)="addEmployeesList()">הוסף רשימת לוחמים</button> -->
 </div>
 
 <!-- CSV list -->
  <div class="flex">
-  <input type="file" accept=".csv" (change)="onCsv($event)" style="margin-inline-start:16px;">
+  <input type="file" id="inputfile" accept=".csv" (change)="onCsv($event)" style="margin-inline-start:16px; display: none;">
+  <button mat-stroked-button (click)="selectFile()">בחר קובץ CSV</button>
   <button mat-stroked-button (click)="downloadCsvTemplate()">הורד תבנית CSV</button>
+  <!-- export CSV buttons -->
+  <!-- <button mat-stroked-button (click)="exportCsvFromScreen()">יצא CSV (מוצגים כרגע)</button> -->
+  <button mat-stroked-button (click)="exportCsvFromServer()">יצא CSV (שמורים בשרת)</button>
 </div>
-
-<div class="flex">
-  <mat-form-field appearance="outline">
-    <mat-label>כישור חדש</mat-label>
-    <input matInput [(ngModel)]="newSkill" name="newSkill" (keyup.enter)="addSkill()" />
-  </mat-form-field>
-  <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
-</div>
-
-<!-- temporary skills - for the next employee to add -->
-  <span class="card flex">
-
-  כישורים של הלוחם הבא שתוסיף:
-  @for (skill of tempSkills; track $index) {
-    <span class="mono">
-      {{skill}}
-      @if ($index !== tempSkills.length-1) {
-        <span>,</span>
-      }
-    </span>
-  }
-  @if (tempSkills.length === 0) {
-    <span style="color: gray;">חפ״ש</span>
-  }
-</span>
 
 <!-- Download CSV of existing employees -->
 <div class="flex">
-  <input type="file" accept=".csv" (change)="onCsv($event)" style="margin-inline-start:16px;">
-  <button mat-stroked-button (click)="downloadCsvTemplate()">הורד תבנית CSV</button>
-
-  <!-- export CSV buttons -->
-  <button mat-stroked-button (click)="exportCsvFromServer()">יצא CSV (שמורים בשרת)</button>
-  <button mat-stroked-button (click)="exportCsvFromScreen()">יצא CSV (מוצגים כרגע)</button>
 </div>
 
 <!-- employees  -->

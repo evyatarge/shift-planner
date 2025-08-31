@@ -144,6 +144,9 @@ export class EmployeesEditorComponent {
     // ייצוא מיידי ממה שמוצג כרגע (גם אם לא נשמר)
     this.downloadCsv(this.employees ?? []);
   }
+  selectFile() {
+    document.getElementById('inputfile').click();    
+  }
 
   private downloadCsv(list: Employee[]) {
     const lines: string[] = [];

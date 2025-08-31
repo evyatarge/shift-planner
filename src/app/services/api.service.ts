@@ -23,6 +23,10 @@ export class ApiService {
     return this.http.post<SolveResponse>(`${this.base}/solve`, req);
   }
 
+  getLastResults(): Observable<SolveResponse> {
+    return this.http.get<SolveResponse>(`${this.base}/lastResult`);
+  }
+
   solveWithExplain(req: ScheduleRequest): Observable<ExplainSolveResponse> {
     return this.http.post<ExplainSolveResponse>(`${this.base}/solve/explain`, req);
   }
