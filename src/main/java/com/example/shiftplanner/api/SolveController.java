@@ -13,6 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -56,7 +57,9 @@ public class SolveController {
         if (req.tasks() != null) {
             for (TaskDTO t : req.tasks()) {
                 tasks.add(new Task(t.id()!=null?t.id():idGen.getAndIncrement(), t.name(), t.start(), t.end(), t.requiredSkills(),
-                        Math.max(1, t.requiredEmployees())));
+                        Math.max(1, t.requiredEmployees()), 
+                        t.allowEmptySlots() != null ? t.allowEmptySlots() : false,
+                        t.is24HourTask() != null ? t.is24HourTask() : false));
             }
         }
 
@@ -109,21 +112,22 @@ public class SolveController {
             }
         }
         String score = best.getScore()!=null ? best.getScore().toString() : "0hard/0soft";
-// Save result to data-storage/result.json, to have last result available to load faster
+        // Save result to data-storage/result.json, to have last result available to load faster
+        String timestamp = Instant.now().toString();
         try {
             Path storageDir = Paths.get("data-storage");
             Files.createDirectories(storageDir);
             Path resultFile = storageDir.resolve("result.json");
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
-            mapper.writeValue(resultFile.toFile(), new SolveResponse(out, score, unassigned));
+            mapper.writeValue(resultFile.toFile(), new SolveResponse(out, score, unassigned, timestamp));
         } catch (Exception e) {
             // Log error or handle as needed
             e.printStackTrace();
         }
-        return new SolveResponse(out, score, unassigned);
+        return new SolveResponse(out, score, unassigned, timestamp);
     }
-// getLastResult
+    // getLastResult
     @GetMapping("/lastResult")
     public SolveResponse getLastResult() {
         try {

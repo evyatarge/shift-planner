@@ -26,7 +26,7 @@ public class TemplatesController {
                 String name = t.name() + " – " + r.skill();
                 var start = req.date().atTime(t.start());
                 var end   = req.date().atTime(t.end());
-                out.add(new TaskDTO(id++, name, start, end, Set.of(r.skill()), r.count()));
+                out.add(new TaskDTO(id++, name, start, end, Set.of(r.skill()), r.count(), false, false));
             }
         }
         return out;

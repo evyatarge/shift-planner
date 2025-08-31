@@ -17,12 +17,15 @@ public class ShiftConstraintProvider implements ConstraintProvider {
             requiredSkills(factory),
             requiredRoleOnSlot(factory),
             noOverlappingForSameEmployee(factory),
+            noDuplicateAssignmentToSameTask(factory),
             preferAssignEverySlotSoft(factory),
             respectAvailability(factory),
             spreadWorkAcrossEmployeesSoft(factory),
             noConsecutiveShiftsHard(factory),
             minRestBetweenShiftsSoft(factory),
-            minRestBetweenShiftsHard(factory)
+            minRestBetweenShiftsHard(factory),
+            block24HourTaskEmployees(factory),
+            prioritizeSkillAssignments(factory)
         };
     }
 
@@ -53,6 +56,13 @@ public class ShiftConstraintProvider implements ConstraintProvider {
                 Joiners.equal(Assignment::getEmployee),
                 Joiners.filtering((a, b) -> a.getEmployee()!=null && b.getEmployee()!=null && overlaps(a.getTask(), b.getTask())))
             .penalize("Overlapping tasks for same employee", HARD);
+    }
+
+    private Constraint noDuplicateAssignmentToSameTask(ConstraintFactory factory) {
+        return factory.forEachUniquePair(Assignment.class,
+                Joiners.equal(Assignment::getTask),
+                Joiners.filtering((a, b) -> a.getTask() != null && b.getTask() != null && a.getTask().equals(b.getTask())))
+            .penalize("Duplicate assignment to same task", HARD);
     }
 
     private Constraint preferAssignEverySlotSoft(ConstraintFactory factory) {
@@ -132,6 +142,25 @@ public class ShiftConstraintProvider implements ConstraintProvider {
                     return gapMinutes < requiredMinutes; // הפרה קשיחה
                 })
                 .penalize("Min rest between shifts (hard)", HARD);
+    }
+
+    private Constraint block24HourTaskEmployees(ConstraintFactory factory) {
+        return factory.forEachUniquePair(Assignment.class,
+                Joiners.equal(Assignment::getEmployee),
+                Joiners.filtering((a, b) -> {
+                    if (a.getEmployee() == null || b.getEmployee() == null) return false;
+                    // If one assignment is to a 24-hour task, block the other assignment
+                    return (a.getTask().isIs24HourTask() && !b.getTask().isIs24HourTask()) ||
+                           (b.getTask().isIs24HourTask() && !a.getTask().isIs24HourTask());
+                }))
+            .penalize("Employee assigned to both 24-hour task and other task", HARD);
+    }
+
+    private Constraint prioritizeSkillAssignments(ConstraintFactory factory) {
+        return factory.from(Assignment.class)
+            .filter(a -> a.getEmployee() != null && a.getTask() != null && !a.getTask().getRequiredSkills().isEmpty())
+            .filter(a -> a.getEmployee().getSkills().stream().noneMatch(skill -> a.getTask().getRequiredSkills().contains(skill)))
+            .penalize("Employee without required skills assigned to skill-required task", SOFT);
     }
 
     private static boolean overlaps(Task t1, Task t2) {

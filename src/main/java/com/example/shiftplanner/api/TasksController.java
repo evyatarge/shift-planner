@@ -17,29 +17,28 @@ public class TasksController {
     public TasksController(TaskStore store) { this.store = store; }
 
     @GetMapping("/tasks")
-    public List<TaskDTO> getAll() {
-        List<Task> list = store.load();
-        List<TaskDTO> out = new ArrayList<>();
-        for (Task t : list) {
-            out.add(new TaskDTO(t.getId(), t.getName(), t.getStart(), t.getEnd(), t.getRequiredSkills(), t.getRequiredEmployees()));
-        }
-        return out;
+    public List<TaskDTO> getTasks() {
+        List<Task> tasks = store.load();
+        return tasks.stream()
+                .map(t -> new TaskDTO(t.getId(), t.getName(), t.getStart(), t.getEnd(), t.getRequiredSkills(), t.getRequiredEmployees(), t.isAllowEmptySlots(), t.isIs24HourTask()))
+                .toList();
     }
 
     @PostMapping("/tasks")
-    public List<TaskDTO> saveAll(@RequestBody List<TaskDTO> dtos) {
-        Set<Long> ids = new HashSet<>();
-        List<Task> tasks = new ArrayList<>();
-        for (TaskDTO d : dtos) {
-            if (d.id() == null) throw new IllegalArgumentException("Task id is required");
-            if (!ids.add(d.id())) throw new IllegalArgumentException("Duplicate task id: " + d.id());
-            tasks.add(new Task(d.id(), d.name(), d.start(), d.end(), d.requiredSkills(), d.requiredEmployees()));
-        }
-        List<Task> saved = store.save(tasks);
-        List<TaskDTO> out = new ArrayList<>();
-        for (Task t : saved) {
-            out.add(new TaskDTO(t.getId(), t.getName(), t.getStart(), t.getEnd(), t.getRequiredSkills(), t.getRequiredEmployees()));
-        }
-        return out;
+    public List<TaskDTO> saveTasks(@RequestBody List<TaskDTO> tasks) {
+        List<Task> taskEntities = tasks.stream()
+                .map(dto -> {
+                    Long id = dto.id() != null ? dto.id() : System.currentTimeMillis() + System.identityHashCode(dto);
+                    return new Task(id, dto.name(), dto.start(), dto.end(), dto.requiredSkills(), dto.requiredEmployees(), 
+                                   dto.allowEmptySlots() != null ? dto.allowEmptySlots() : false,
+                                   dto.is24HourTask() != null ? dto.is24HourTask() : false);
+                })
+                .toList();
+        
+        store.save(taskEntities);
+        
+        return taskEntities.stream()
+                .map(t -> new TaskDTO(t.getId(), t.getName(), t.getStart(), t.getEnd(), t.getRequiredSkills(), t.getRequiredEmployees(), t.isAllowEmptySlots(), t.isIs24HourTask()))
+                .toList();
     }
 }

@@ -15,10 +15,32 @@ public class Task {
     private LocalDateTime end;
     private Set<String> requiredSkills;
     private int requiredEmployees;
+    private boolean allowEmptySlots = false; // If true, some slots can remain unassigned
+    private boolean is24HourTask = false; // If true, assigned employees cannot get other tasks during this period
 
     public Task() {}
     public Task(Long id, String name, LocalDateTime start, LocalDateTime end, Set<String> requiredSkills, int requiredEmployees) {
         this.id = id; this.name = name; this.start = start; this.end = end; this.requiredSkills = requiredSkills; this.requiredEmployees = requiredEmployees;
+    }
+
+    public Task(
+            Long id,
+            String name,
+            LocalDateTime start,
+            LocalDateTime end,
+            Set<String> requiredSkills,
+            int requiredEmployees,
+            boolean allowEmptySlots,
+            boolean is24HourTask
+        ) {
+        this.id = id;
+        this.name = name;
+        this.start = start;
+        this.end = end;
+        this.requiredSkills = requiredSkills;
+        this.requiredEmployees = requiredEmployees;
+        this.allowEmptySlots = allowEmptySlots;
+        this.is24HourTask = is24HourTask;
     }
 
     public Long getId(){return id;} public void setId(Long id){this.id=id;}
@@ -27,6 +49,8 @@ public class Task {
     public LocalDateTime getEnd(){return end;} public void setEnd(LocalDateTime end){this.end=end;}
     public Set<String> getRequiredSkills(){return requiredSkills;} public void setRequiredSkills(Set<String> s){this.requiredSkills=s;}
     public int getRequiredEmployees(){return requiredEmployees;} public void setRequiredEmployees(int n){this.requiredEmployees=n;}
+    public boolean isAllowEmptySlots(){return allowEmptySlots;} public void setAllowEmptySlots(boolean b){this.allowEmptySlots=b;}
+    public boolean isIs24HourTask(){return is24HourTask;} public void setIs24HourTask(boolean b){this.is24HourTask=b;}
 
     @Override public boolean equals(Object o){ return o instanceof Task t && Objects.equals(id,t.id); }
     @Override public int hashCode(){ return Objects.hash(id); }
