@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { EmployeesEditorComponent } from './components/employees/employees-editor.component';
@@ -20,8 +21,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, ReactiveFormsModule,
-    EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent, ShiftTemplatesComponent // ExplanationPanelComponent
+  CommonModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatTabsModule, FormsModule, ReactiveFormsModule,
+  EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent, ShiftTemplatesComponent // ExplanationPanelComponent
   ],
   templateUrl: './app.component.html'
 })
