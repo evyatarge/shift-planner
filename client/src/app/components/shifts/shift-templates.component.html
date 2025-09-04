@@ -1,0 +1,52 @@
+<div class="container shift-templates">
+  <div class="flex">
+      <mat-form-field appearance="outline">
+          <mat-label>שם משמרת</mat-label>
+          <input matInput [(ngModel)]="form.name">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+          <mat-label>התחלה</mat-label>
+          <input matInput [matTimepicker]="startTemp" [(ngModel)]="form.start" placeholder="08:00">
+          <mat-timepicker #startTemp></mat-timepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+          <mat-label>סיום</mat-label>
+          <input matInput [matTimepicker]="endTemp" [(ngModel)]="form.end" placeholder="16:00">
+          <mat-timepicker #endTemp></mat-timepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+          <mat-label>עובדים דרושים</mat-label>
+          <input type="number" min="1" matInput [(ngModel)]="form.requiredEmployees">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="add()">
+          הוסף תבנית
+      </button>
+  </div>
+
+  <div class="list">
+    <mat-card *ngFor="let s of templates">
+      <div class="flex" style="flex-direction: row">
+        <strong>{{s.name}}</strong> —
+          <div class="time-range" style="direction: ltr;">
+            {{s.start | date:'shortTime' }}–{{s.end | date:'shortTime' }}
+          </div>
+      · נדרשים: {{s.requiredEmployees}}
+        <button mat-button color="warn" (click)="remove(s)">מחק</button>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="flex" style="margin-top:8px;">
+      <mat-form-field appearance="outline">
+          <mat-label>תאריך</mat-label>
+          <input matInput [matDatepicker]="dateTemp" [(ngModel)]="targetDate" placeholder="2025-01-01">
+          <mat-datepicker-toggle matIconSuffix [for]="dateTemp"></mat-datepicker-toggle>
+          <mat-datepicker #dateTemp></mat-datepicker>
+      </mat-form-field>
+    <button mat-stroked-button (click)="generate()">צור משימות ליממה</button>
+  </div>
+</div>

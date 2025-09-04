@@ -1,0 +1,61 @@
+<div class="flex">
+  <mat-form-field appearance="outline">
+    <mat-label>שם המשימה</mat-label>
+    <input matInput [(ngModel)]="form.name">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>התחלה</mat-label>
+    <input matInput [matTimepicker]="startPicker" [(ngModel)]="form.start" placeholder="2025-08-24T08:00">
+    <mat-timepicker #startPicker></mat-timepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>סיום</mat-label>
+    <input matInput [matTimepicker]="endPicker" [(ngModel)]="form.end" placeholder="2025-08-24T16:00">
+    <mat-timepicker #endPicker></mat-timepicker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>לוחמים דרושים</mat-label>
+    <input type="number" matInput [(ngModel)]="form.requiredEmployees" min="1">
+  </mat-form-field>
+  
+  <mat-checkbox [(ngModel)]="form.allowEmptySlots">אפשר חריגים ריקים</mat-checkbox>
+  <mat-checkbox [(ngModel)]="form.is24HourTask">משימה 24 שעות</mat-checkbox>
+</div>
+
+<div class="flex">
+  <mat-form-field appearance="outline">
+    <mat-label>כישור נדרש</mat-label>
+    <input matInput [(ngModel)]="newSkill" (keyup.enter)="addSkill()">
+  </mat-form-field>
+  <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
+</div>
+
+<div> כישורים נדרשים למשימה: <span class="mono">{{ form.requiredSkills.join(', ') || '—' }}</span></div>
+
+<div class="flex" style="margin:8px 0">
+  <button mat-raised-button color="primary" (click)="addTask()">הוסף משימה</button>
+</div>
+
+<!-- CSV list -->
+<div class="flex">
+  <input type="file" accept=".csv" (change)="onCsv($event)" style="margin-inline-start:16px;">
+  <button mat-stroked-button (click)="downloadCsvTemplate()">הורד תבנית CSV</button>
+  <div style="color: gray; margin-inline-start: 8px;">שם,התחלה,סיום,כישורים נדרשים,כמות לוחמים</div>
+</div>
+
+@for (t of tasks; track t.id) {
+<div class="card">
+  <div class="flex" style="align-items:center; justify-content:space-between">
+    <div>
+      <strong>{{ t.name }}</strong>
+      <div class="mono" style="direction: ltr;">{{ t.start | date:'short' }} → {{ t.end | date:'short' }}</div>
+      <div>כישורים: <span class="mono">{{ t.requiredSkills.join(', ') || '—' }}</span></div>
+      <div>לוחמים דרושים: {{ t.requiredEmployees }}</div>
+    </div>
+    <button mat-button color="warn" (click)="remove(t)">מחק</button>
+  </div>
+</div>
+}
