@@ -1,0 +1,41 @@
+# =========================
+# Backend .gitignore (Java 21 + Spring Boot + Maven)
+# =========================
+
+# --- OS / File system noise ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# --- Java / JVM ---
+*.class
+*.log
+*.ctxt
+hs_err_pid*
+replay_pid*
+*.hprof
+*.error
+*.trace
+
+# --- Maven ---
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# do NOT ignore the Maven Wrapper; it should be committed
+# .mvn/wrapper/**  <-- keep
+# mvnw & |oai:code-citation|
+
+# data files
+data-storage
+
+# Explain files
+src/main/java/com/example/shiftplanner/api/ExplainController.java
+src/main/java/com/example/shiftplanner/api/ExplainDtos.java

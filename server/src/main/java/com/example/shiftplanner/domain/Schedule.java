@@ -1,0 +1,70 @@
+package com.example.shiftplanner.domain;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+
+/** Planning solution containing facts and planning entities. */
+@PlanningSolution
+public class Schedule {
+
+    @ValueRangeProvider(id = "employeeRange")
+    @ProblemFactCollectionProperty
+    private List<Employee> employeeList;
+
+    @ProblemFactCollectionProperty
+    private List<Task> taskList;
+
+    // Optional availability facts. If empty or null, availability constraint has no effect.
+    @ProblemFactCollectionProperty
+    private List<Availability> availabilityList;
+
+    @PlanningEntityCollectionProperty
+    private List<Assignment> assignmentList;
+
+    @PlanningScore
+    private HardSoftLongScore score;
+
+    @ProblemFactCollectionProperty
+    private List<SchedulingSettings> settingsList = new ArrayList<>();
+
+    public Schedule(){}
+
+    public Schedule(
+        List<Employee> employeeList,
+        List<Task> taskList,
+        List<Availability> availabilityList,
+        List<Assignment> assignmentList,
+        List<SchedulingSettings> settingsList
+    ) {
+        this.employeeList = employeeList;
+        this.taskList = taskList;
+        this.availabilityList = availabilityList;
+        this.assignmentList = assignmentList;
+        this.settingsList = settingsList;
+    }
+
+    public List<Employee> getEmployeeList(){ return employeeList; }
+    public void setEmployeeList(List<Employee> employeeList){ this.employeeList = employeeList; }
+
+    public List<Task> getTaskList(){ return taskList; }
+    public void setTaskList(List<Task> taskList){ this.taskList = taskList; }
+
+    public List<Availability> getAvailabilityList(){ return availabilityList; }
+    public void setAvailabilityList(List<Availability> availabilityList){ this.availabilityList = availabilityList; }
+
+    public List<Assignment> getAssignmentList(){ return assignmentList; }
+    public void setAssignmentList(List<Assignment> assignmentList){ this.assignmentList = assignmentList; }
+
+    public HardSoftLongScore getScore(){ return score; }
+    public void setScore(HardSoftLongScore score){ this.score = score; }
+
+    public List<SchedulingSettings> getSettingsList() { return settingsList; }
+    public void setSettingsList(List<SchedulingSettings> settingsList) { this.settingsList = settingsList; }
+}
