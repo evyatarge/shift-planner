@@ -1,0 +1,15 @@
+# Root
+.DS_Store
+*.log
+
+# Frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.angular/cache/
+
+# Backend
+/backend/target/
+/backend/.idea/
+/backend/.classpath
+/backend/.project
+/backend/.settings/
