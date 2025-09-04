@@ -23,8 +23,12 @@
           <button mat-stroked-button (click)="saveTasks()">שמור משימות</button>
         </div>
       </div>
+      
+    </mat-tab>
+    <mat-tab label="שיבוצים">
       <div class="card settings-card">
         <h3>הגדרות מנוחה</h3>
+        <h5>(ברירת מחדל - 6 שעות)</h5>
         <div class="flex">
           <mat-form-field appearance="outline">
             <mat-label>מינימום שעות מנוחה</mat-label>
@@ -42,8 +46,6 @@
       <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">
         {{ solving ? 'מחשב...' : 'שבץ באופן אופטימלי' }}
       </button>
-    </mat-tab>
-    <mat-tab label="שיבוצים">
       @if (result) {
         <div class="card result-card">
           <h3>תוצאה</h3>
