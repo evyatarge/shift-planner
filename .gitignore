@@ -2,14 +2,15 @@
 .DS_Store
 *.log
 
-# Frontend
-/frontend/node_modules/
-/frontend/dist/
-/frontend/.angular/cache/
+# Client
+/client/node_modules/
+/client/dist/
+/client/.angular/cache/
 
-# Backend
-/backend/target/
-/backend/.idea/
-/backend/.classpath
-/backend/.project
-/backend/.settings/
+# Server
+/server/target/
+/server/.idea/
+/server/.classpath
+/server/.project
+/server/.settings/
+.idea
