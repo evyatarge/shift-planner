@@ -2,9 +2,9 @@
 
 ## Run
 ```bash
-cd frontend
+cd client
 npm install
-ng serve --proxy-config proxy.conf.json
+npm run start
 ```
 Then open `http://localhost:4200`.
 

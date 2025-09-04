@@ -2,7 +2,7 @@
 
 ## Run
 ```bash
-cd backend
+cd server
 mvn spring-boot:run
 ```
 Server listens on `http://localhost:8080`.
