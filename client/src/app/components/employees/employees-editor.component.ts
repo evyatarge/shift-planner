@@ -22,6 +22,8 @@ import { ApiService } from 'src/app/services/api.service';
   ]
 })
 export class EmployeesEditorComponent {
+  // Store duplications for future features
+  duplications: { original: Employee, imported: Employee }[] = [];
   @Input() employees: Employee[] = [];
   @Output() employeesChange = new EventEmitter<Employee[]>();
 
@@ -96,12 +98,13 @@ export class EmployeesEditorComponent {
       if (!lines.length) return;
 
       // Header detection (hebrew/english)
-      const headerTokens = lines[0].split(/[,\t;]/).map(t => t.trim().toLowerCase());
+      const headerTokens = lines[0].split(/[,	;]/).map(t => t.trim().toLowerCase());
       const isHeader = headerTokens.some(t => ['name','שם'].includes(t)) ||
                        headerTokens.some(t => ['skills','כישורים','מיומנויות'].includes(t));
       const startIdx = isHeader ? 1 : 0;
 
       let maxId = this.employees.length ? Math.max(...this.employees.map(e => e.id)) : 0;
+      const importedEmployees: Employee[] = [];
       for (let i = startIdx; i < lines.length; i++) {
         const raw = lines[i];
         const firstComma = raw.indexOf(',');
@@ -114,8 +117,23 @@ export class EmployeesEditorComponent {
         if (!name) continue;
         const skills = (skillsPart ? skillsPart.split(/[;,|]/) : []).map(s => s.trim()).filter(Boolean);
         maxId += 1;
-        this.employees.push({ id: maxId, name, skills, active: true });
+        importedEmployees.push({ id: maxId, name, skills, active: true });
       }
+
+      // Handle duplicates and import
+      this.duplications = [];
+      importedEmployees.forEach(imported => {
+        const idx = this.employees.findIndex(e => e.name === imported.name);
+        if (idx !== -1) {
+          // Duplicate found: replace and log
+          const original = this.employees[idx];
+          this.employees[idx] = imported;
+          this.duplications.push({ original, imported });
+          console.log(`original: ${original.name}, imported: ${imported.name}`);
+        } else {
+          this.employees.push(imported);
+        }
+      });
       this.employees = [...this.employees];
       this.emit();
       input.value = '';
