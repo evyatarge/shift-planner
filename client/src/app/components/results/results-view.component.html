@@ -5,23 +5,23 @@
   <div><strong>Score:</strong> {{ result.score }}</div>
   <div><strong>Unassigned slots:</strong> {{ result.unassignedCount }}</div>
 
-  <table mat-table [dataSource]="groupedAssignments" class="mat-elevation-z2" style="width:100%; margin-top:12px">
-    <ng-container matColumnDef="task">
-      <th mat-header-cell *matHeaderCellDef> משימה </th>
-      <td mat-cell *matCellDef="let a"> {{ a.taskName }} </td>
-    </ng-container>
+  @for (taskGroup of groupedByTask; track taskGroup.taskName) {
+    <div style="margin-top: 24px;">
+      <h4 style="margin-bottom: 8px; color: #1976d2;">{{ taskGroup.taskName }}</h4>
+      <table mat-table [dataSource]="taskGroup.assignments" class="mat-elevation-z2" style="width:100%; margin-bottom: 16px;">
+        <ng-container matColumnDef="time">
+          <th mat-header-cell *matHeaderCellDef> זמן </th>
+          <td mat-cell *matCellDef="let a" style="direction: ltr;"> {{ a.start | date:'shortTime' }} → {{ a.end | date:'shortTime' }} </td>
+        </ng-container>
 
-    <ng-container matColumnDef="time">
-      <th mat-header-cell *matHeaderCellDef> זמן </th>
-      <td mat-cell *matCellDef="let a" style="direction: ltr;"> {{ a.start | date:'shortTime' }} → {{ a.end | date:'shortTime' }} </td>
-    </ng-container>
+        <ng-container matColumnDef="employees">
+          <th mat-header-cell *matHeaderCellDef> לוחמים </th>
+          <td mat-cell *matCellDef="let a"> {{ getEmployeeNames(a) }} </td>
+        </ng-container>
 
-    <ng-container matColumnDef="employees">
-      <th mat-header-cell *matHeaderCellDef> לוחמים </th>
-      <td mat-cell *matCellDef="let a"> {{ getEmployeeNames(a) }} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="['task','time','employees']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['task','time','employees'];"></tr>
-  </table>
+        <tr mat-header-row *matHeaderRowDef="['time','employees']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['time','employees'];"></tr>
+      </table>
+    </div>
+  }
 </div>

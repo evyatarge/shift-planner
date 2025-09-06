@@ -10,6 +10,11 @@ interface WorkScheduleEntry {
   employeeNames: string[];
 }
 
+interface TaskGroup {
+  taskName: string;
+  assignments: WorkScheduleEntry[];
+}
+
 @Component({
   selector: 'app-results-view',
   standalone: true,
@@ -19,25 +24,40 @@ interface WorkScheduleEntry {
 export class ResultsViewComponent {
   @Input() result!: SolveResponse;
 
-  get groupedAssignments(): Array<WorkScheduleEntry> {
+  get groupedByTask(): Array<TaskGroup> {
     if (!this.result || !this.result.assignments) return [];
     
-    const map = new Map<string, WorkScheduleEntry>();
+    const taskMap = new Map<string, Map<string, WorkScheduleEntry>>();
     
     this.result.assignments.forEach(task => {
-      const key = `${task.taskName}|${task.start}|${task.end}`;
-      if (!map.has(key)) {
-        map.set(key, { taskName: task.taskName, start: task.start, end: task.end, employeeNames: [] });
+      if (!taskMap.has(task.taskName)) {
+        taskMap.set(task.taskName, new Map<string, WorkScheduleEntry>());
       }
+      
+      const timeKey = `${task.start}|${task.end}`;
+      const taskGroup = taskMap.get(task.taskName)!;
+      
+      if (!taskGroup.has(timeKey)) {
+        taskGroup.set(timeKey, { 
+          taskName: task.taskName, 
+          start: task.start, 
+          end: task.end, 
+          employeeNames: [] 
+        });
+      }
+      
       if (task.employeeName) {
-        map.get(key)!.employeeNames.push(task.employeeName);
+        taskGroup.get(timeKey)!.employeeNames.push(task.employeeName);
       }
     });
 
-    return Array.from(map.values());
+    return Array.from(taskMap.entries()).map(([taskName, assignments]) => ({
+      taskName,
+      assignments: Array.from(assignments.values())
+    }));
   }
 
   getEmployeeNames(a: Partial<WorkScheduleEntry>): string {
-    return a.employeeNames.length ? a.employeeNames.join(', ') : '—';
+    return a.employeeNames?.length ? a.employeeNames.join(', ') : '—';
   }
 }
