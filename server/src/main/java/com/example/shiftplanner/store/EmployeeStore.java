@@ -19,7 +19,7 @@ public class EmployeeStore {
     private final ObjectMapper mapper;
 
     public EmployeeStore(
-            @Value("${app.storage.dir:#{systemProperties['user.home'] + '/.shift-planner'}}") String storageDir) {
+            @Value("${app.storage.dir:#{systemProperties.userHome + '/.shift-planner'}}") String storageDir) {
         this.dir = Paths.get(storageDir);
         this.file = dir.resolve("employees.json");
         this.mapper = new ObjectMapper()
