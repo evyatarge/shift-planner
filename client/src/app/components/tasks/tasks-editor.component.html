@@ -1,3 +1,4 @@
+
 <div class="flex">
   <mat-form-field appearance="outline">
     <mat-label>שם המשימה</mat-label>
@@ -20,7 +21,7 @@
     <mat-label>לוחמים דרושים</mat-label>
     <input type="number" matInput [(ngModel)]="form.requiredEmployees" min="1">
   </mat-form-field>
-  
+
   <mat-checkbox [(ngModel)]="form.allowEmptySlots">אפשר חריגים ריקים</mat-checkbox>
   <mat-checkbox [(ngModel)]="form.is24HourTask">משימה 24 שעות</mat-checkbox>
 </div>
@@ -33,7 +34,10 @@
   <button mat-stroked-button (click)="addSkill()">הוסף כישור</button>
 </div>
 
-<div> כישורים נדרשים למשימה: <span class="mono">{{ form.requiredSkills.join(', ') || '—' }}</span></div>
+<span class="card flex">
+  כישורים נדרשים למשימה:
+  <span class="mono">{{ form.requiredSkills.join(', ') || '—' }}</span>
+</span>
 
 <div class="flex" style="margin:8px 0">
   <button mat-raised-button color="primary" (click)="addTask()">הוסף משימה</button>
@@ -41,7 +45,8 @@
 
 <!-- CSV list -->
 <div class="flex">
-  <input type="file" accept=".csv" (change)="onCsv($event)" style="margin-inline-start:16px;">
+  <input type="file" accept=".csv" (change)="onCsv($event)" style="margin-inline-start:16px; display: none;" id="input-file-task">
+  <button mat-stroked-button (click)="selectFile()">בחר קובץ CSV</button>
   <button mat-stroked-button (click)="downloadCsvTemplate()">הורד תבנית CSV</button>
   <div style="color: gray; margin-inline-start: 8px;">שם,התחלה,סיום,כישורים נדרשים,כמות לוחמים</div>
 </div>
