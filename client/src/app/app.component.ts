@@ -24,7 +24,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   CommonModule, MatButtonModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatTabsModule, FormsModule, ReactiveFormsModule,
   EmployeesEditorComponent, TasksEditorComponent, ResultsViewComponent, // ShiftTemplatesComponent // ExplanationPanelComponent
   ],
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   title = 'שבצק-אותי משמרות';

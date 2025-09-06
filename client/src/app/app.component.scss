@@ -1,0 +1,38 @@
+.container {
+  padding-bottom: 2rem;
+}
+
+.sticky-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Override Angular Material tab styles if needed */
+.sticky-tabs ::ng-deep .mat-mdc-tab-header {
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  background-color: white;
+}
+
+.tab-content {
+  padding: 1rem;
+  overflow: scroll;
+  height: 75vh; // restrict height to scroll inside the tab instead of whole page
+//   min-height: 100vh; /* Ensure there's enough content to scroll */
+}
+
+.flex {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  padding: 12px;
+  margin: 8px 0;
+}

@@ -1,57 +1,62 @@
 
 <div class="container">
   <h1>{{title}}</h1>
-  <mat-tab-group>
+  <mat-tab-group class="sticky-tabs">
     <mat-tab label="לוחמים">
-      <div class="card employees-card">
-        <h3>לוחמים {{ employees.length ? `(סה״כ: ${employees.length})` : '' }}</h3>
-        <app-employees-editor [(employees)]="employees"></app-employees-editor>
-        <div class="flex">
-          <button mat-raised-button color="primary" (click)="saveEmployees()">שמור לוחמים</button>
+      <div class="tab-content">
+        <div class="card employees-card">
+          <h3>לוחמים {{ employees.length ? `(סה״כ: ${employees.length})` : '' }}</h3>
+          <app-employees-editor [(employees)]="employees"></app-employees-editor>
+          <div class="flex">
+            <button mat-raised-button color="primary" (click)="saveEmployees()">שמור לוחמים</button>
+          </div>
         </div>
       </div>
     </mat-tab>
     <mat-tab label="משימות">
-      <!-- <div class="card">
-        <h3>תבניות משמרות ליומיום</h3>
-        <app-shift-templates (tasksGenerated)="onTasksGenerated($event)"></app-shift-templates>
-      </div> -->
-      <div class="card tasks-card">
-        <h3>משימות</h3>
-        <app-tasks-editor [(tasks)]="tasks" (tasksChange)="onTasksChange"></app-tasks-editor>
-        <div class="flex">
-          <button mat-stroked-button (click)="saveTasks()">שמור משימות</button>
+      <div class="tab-content">
+        <!-- <div class="card">
+          <h3>תבניות משמרות ליומיום</h3>
+          <app-shift-templates (tasksGenerated)="onTasksGenerated($event)"></app-shift-templates>
+        </div> -->
+        <div class="card tasks-card">
+          <h3>משימות</h3>
+          <app-tasks-editor [(tasks)]="tasks" (tasksChange)="onTasksChange"></app-tasks-editor>
+          <div class="flex">
+            <button mat-stroked-button (click)="saveTasks()">שמור משימות</button>
+          </div>
         </div>
       </div>
-      
     </mat-tab>
     <mat-tab label="שיבוצים">
-      <div class="card settings-card">
-        <h3>הגדרות מנוחה</h3>
-        <h5>(ברירת מחדל - 6 שעות)</h5>
-        <div class="flex">
-          <mat-form-field appearance="outline">
-            <mat-label>מינימום שעות מנוחה</mat-label>
-            <input matInput type="number" min="0" [(ngModel)]="minRestHours">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>מצב אילוץ</mat-label>
-            <mat-select [(ngModel)]="restMode">
-              <mat-option value="SOFT">Soft (העדפה)</mat-option>
-              <mat-option value="HARD">Hard (אסור להפר)</mat-option>
-            </mat-select>
-          </mat-form-field>
+      <div class="tab-content">
+        <div class="card settings-card">
+          <h3>הגדרות מנוחה</h3>
+          <h5>(ברירת מחדל - 6 שעות)</h5>
+          <div class="flex">
+            <mat-form-field appearance="outline">
+              <mat-label>מינימום שעות מנוחה</mat-label>
+              <input matInput type="number" min="0" [(ngModel)]="minRestHours">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>מצב אילוץ</mat-label>
+              <mat-select [(ngModel)]="restMode">
+                <mat-option value="SOFT">Soft (העדפה)</mat-option>
+                <mat-option value="HARD">Hard (אסור להפר)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
+        <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">
+          {{ solving ? 'מחשב...' : 'שבץ באופן אופטימלי' }}
+        </button>
+        @if (result) {
+          <div class="card result-card">
+            <h3>תוצאה</h3>
+            <app-results-view [result]="result"></app-results-view>
+          </div>
+        }
       </div>
-      <button mat-raised-button color="primary" (click)="solve()" [disabled]="solving">
-        {{ solving ? 'מחשב...' : 'שבץ באופן אופטימלי' }}
-      </button>
-      @if (result) {
-        <div class="card result-card">
-          <h3>תוצאה</h3>
-          <app-results-view [result]="result"></app-results-view>
-        </div>
-      }
     </mat-tab>
   </mat-tab-group>
   <!-- <div class="card" *ngIf="explanation">
